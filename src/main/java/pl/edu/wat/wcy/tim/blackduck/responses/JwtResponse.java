@@ -1,4 +1,4 @@
-package pl.edu.wat.wcy.tim.blackduck.reponses;
+package pl.edu.wat.wcy.tim.blackduck.responses;
 
 import org.springframework.security.core.GrantedAuthority;
 
