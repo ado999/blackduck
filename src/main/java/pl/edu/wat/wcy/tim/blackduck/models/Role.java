@@ -12,7 +12,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    //Enumerated == DELARE THAT VALUE SHOULD BE CONVERTED FROM STRING IN DATABASE
     @Enumerated(EnumType.STRING)
+    //NaturalId == IDENTIFIES A DATABASE RECORD AND AN OBJECT IN REAL LIFE
     @NaturalId
     @Column(length = 60)
     private RoleName name;
