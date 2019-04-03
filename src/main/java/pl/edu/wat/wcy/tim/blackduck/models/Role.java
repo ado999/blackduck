@@ -1,6 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
 import org.hibernate.annotations.NaturalId;
+import pl.edu.wat.wcy.tim.blackduck.models.RoleName;
 
 import javax.persistence.*;
 
