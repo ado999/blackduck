@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtAuthEntryPoint;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtAuthTokenFilter;
-import pl.edu.wat.wcy.tim.blackduck.services.UserDetailsServiceImpl;
+import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
