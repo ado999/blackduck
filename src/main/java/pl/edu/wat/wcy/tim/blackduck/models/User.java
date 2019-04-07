@@ -47,12 +47,26 @@ public class User {
     //HashSet == IT DOES NOT GUARANEE THAT THE ORDER WILL REMAIN CONSTANT
     private Set<Role> roles = new HashSet<>();
 
+    //followedUsers -> this user follows users listed in "followedUsers"
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "follower_of_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_user_id"))
+    private Set<User> followedUsers = new HashSet<>();
+
+    // present -> has an active session in browser at the moment
+    private boolean present;
+
     public User() {}
 
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
+    }
+
+    public User(int id){
+        this.id = id;
     }
 
     public int getId() {
@@ -93,5 +107,21 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<User> getFollowedUsers() {
+        return followedUsers;
+    }
+
+    public void setFollowedUsers(Set<User> followedUsers) {
+        this.followedUsers = followedUsers;
+    }
+
+    public boolean isPresent() {
+        return present;
+    }
+
+    public void setPresent(boolean present) {
+        this.present = present;
     }
 }

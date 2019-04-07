@@ -1,4 +1,4 @@
-package pl.edu.wat.wcy.tim.blackduck;
+package pl.edu.wat.wcy.tim.blackduck.main;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

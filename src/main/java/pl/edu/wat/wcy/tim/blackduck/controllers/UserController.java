@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
-import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserDetailsServiceImpl;
+import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserService;
 
 import javax.validation.Valid;
 
@@ -18,7 +19,7 @@ import javax.validation.Valid;
 public class UserController {
 
     @Autowired
-    private UserDetailsServiceImpl userService;
+    private UserService userService;
 
 
 
@@ -37,6 +38,11 @@ public class UserController {
         if(result)
         return new ResponseEntity<>(HttpStatus.OK);
         else return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
+    }
+
+    @GetMapping("/followed")
+    public ResponseEntity<UserDTO> getFollowedUsers(@RequestBody UserDTO dto){
+        return new ResponseEntity(userService.getFollowedUsers(dto), HttpStatus.OK);
     }
 
 }
