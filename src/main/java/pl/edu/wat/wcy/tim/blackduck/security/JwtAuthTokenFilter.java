@@ -8,7 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserService;
+import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

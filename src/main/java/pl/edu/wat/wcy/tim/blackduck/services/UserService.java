@@ -1,4 +1,4 @@
-package pl.edu.wat.wcy.tim.blackduck.services.implementations;
+package pl.edu.wat.wcy.tim.blackduck.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
-import pl.edu.wat.wcy.tim.blackduck.Exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.models.Role;
 import pl.edu.wat.wcy.tim.blackduck.models.RoleName;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
@@ -22,7 +21,6 @@ import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
-import pl.edu.wat.wcy.tim.blackduck.services.interfaces.IUserService;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
 
 import java.util.HashSet;
@@ -79,11 +77,11 @@ public class UserService implements UserDetailsService, IUserService {
     @Override
     public boolean signup(SignUpRequest request){
         if(userRepository.existsByUsername(request.getUsername())) {
-            throw new IllegalArgumentException("Fail -> Username is already taken!");
+            throw new IllegalArgumentException("Username is already taken!");
         }
 
         if(userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Fail -> Email is already in use!");
+            throw new IllegalArgumentException("Email is already in use!");
         }
 
         // Creating user's account
@@ -91,7 +89,7 @@ public class UserService implements UserDetailsService, IUserService {
 
         Set<Role> roles = new HashSet();
         roles.add(roleRepository.findByName(RoleName.USER).orElseThrow(
-                () -> new RuntimeException("Fail! -> Cause: User Role not found.")
+                () -> new RuntimeException("User Role not found.")
         ));
         user.setRoles(roles);
         userRepository.save(user);

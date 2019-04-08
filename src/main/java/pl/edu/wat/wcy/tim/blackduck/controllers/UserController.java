@@ -11,7 +11,7 @@ import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
-import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserService;
+import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 import javax.validation.Valid;
 
@@ -33,11 +33,8 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
 
-        boolean result = userService.signup(signUpRequest);
-
-        if(result)
+        userService.signup(signUpRequest);
         return new ResponseEntity<>(HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
     }
 
     @GetMapping("/followed")

@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtAuthEntryPoint;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtAuthTokenFilter;
-import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserService;
+import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +24,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.implementations.UserService;
 )
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    UserService userDetailsService;
+    UserService userService;
 
     @Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
-                .userDetailsService(userDetailsService)
+                .userDetailsService(userService)
                 .passwordEncoder(passwordEncoder());
     }
 
