@@ -13,12 +13,12 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(TheSameUserException.class)
     public ResponseEntity exception(TheSameUserException e){
-        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity exception(IllegalArgumentException e){
-        return new ResponseEntity<>(new ExceptionResponse(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_ACCEPTABLE);
     }
 
 }
