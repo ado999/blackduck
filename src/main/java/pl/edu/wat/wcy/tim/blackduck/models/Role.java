@@ -1,7 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
 import org.hibernate.annotations.NaturalId;
-import pl.edu.wat.wcy.tim.blackduck.models.RoleName;
 
 import javax.persistence.*;
 
@@ -22,6 +21,8 @@ public class Role {
     public Role(RoleName name){
         this.name = name;
     }
+
+    public Role(){}
 
     public int getId() {
         return id;

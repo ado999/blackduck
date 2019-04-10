@@ -63,4 +63,10 @@ public class JwtProvider {
                 .parseClaimsJws(token)
                 .getBody().getSubject();
     }
+
+    public String resolveUsername(String bearerToken){
+        String token = bearerToken.replace("Bearer ", "");
+        return getUserNameFromJwtToken(token);
+    }
+
 }

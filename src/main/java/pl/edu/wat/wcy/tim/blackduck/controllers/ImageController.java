@@ -7,12 +7,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.repositories.ImageRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.ImageRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.ResponseMessage;
 import pl.edu.wat.wcy.tim.blackduck.services.ImageService;
-import pl.edu.wat.wcy.tim.blackduck.services.implementations.ImageServiceImpl;
 
 import javax.validation.Valid;
 
@@ -29,13 +29,10 @@ public class ImageController {
     ImageRepository imageRepository;
 
     @Autowired
-    ImageServiceImpl imageServiceImpl;
-
-    @Autowired
     ImageService imageService;
 
     @PostMapping("/addimage")
-    public ResponseEntity<?> addImage(@Valid @RequestBody ImageRequest request) {
+    public ResponseEntity<?> addImage(@Valid @RequestBody ImageRequest request) throws UserNotFoundException {
 
         ResponseMessage response = imageService.addImage(request);
 
@@ -49,7 +46,7 @@ public class ImageController {
     @GetMapping("/getimage/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = imageServiceImpl.loadFile(filename);
+        Resource file = imageService.loadFile(filename);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                 .header(HttpHeaders.CONTENT_TYPE, "multipart/byteranges")

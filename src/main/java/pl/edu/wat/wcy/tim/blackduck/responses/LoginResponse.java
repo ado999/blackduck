@@ -4,25 +4,22 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-//JwtResponse object will be returned by SpringBoot server once an authentication is successful, it contains:
+//LoginResponse object will be returned by SpringBoot server once an authentication is successful, it contains:
 //1. JWT Token
 //2. Schema Type of Token
 //3. Username
 //4. Array of Userâ€™s Authorities
 
-public class JwtResponse {
+public class LoginResponse {
     private String token;
-    private String type = "Bearer";
     private String username;
-    private Collection<? extends GrantedAuthority> authorities;
 
-    public JwtResponse(String accessToken, String username, Collection<? extends GrantedAuthority> authorities) {
+    public LoginResponse(String accessToken, String username) {
         this.token = accessToken;
         this.username = username;
-        this.authorities = authorities;
     }
 
-    public JwtResponse(String accessToken) {
+    public LoginResponse(String accessToken) {
         this.token = accessToken;
     }
 
@@ -34,14 +31,6 @@ public class JwtResponse {
         this.token = accessToken;
     }
 
-    public String getTokenType() {
-        return type;
-    }
-
-    public void setTokenType(String tokenType) {
-        this.type = tokenType;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -50,7 +39,4 @@ public class JwtResponse {
         this.username = username;
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
 }

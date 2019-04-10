@@ -1,0 +1,57 @@
+package pl.edu.wat.wcy.tim.blackduck.controllers;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
+import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
+import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
+import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
+import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
+import pl.edu.wat.wcy.tim.blackduck.models.User;
+import pl.edu.wat.wcy.tim.blackduck.services.ChatService;
+import pl.edu.wat.wcy.tim.blackduck.services.IChatService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+public class ChatController {
+
+    private ChatService chatService;
+
+    @Autowired
+    public ChatController(ChatService chatService){
+        this.chatService = chatService;
+    }
+
+    @PostMapping("/chat/sendMessage")
+    public ResponseEntity receiveMessage(@RequestBody ChatMessageDTO chatMessageDTO, @RequestHeader(name = "Authorization") String token) throws UserNotFoundException, MessageMalformedException {
+        chatService.receiveMessage(chatMessageDTO, token);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping("/chat/getMessages")
+    public ResponseEntity getMessages(@RequestHeader(name = "Authorization") String token) throws UserNotFoundException {
+        List<ChatMessageDTO> messages = chatService.getExistingMessages(token);
+
+        return new ResponseEntity<>(messages, HttpStatus.OK);
+    }
+
+    @PostMapping("/chat/establishConversation")
+    public ResponseEntity establishConversation(@RequestBody UserDTO userDTO, @RequestHeader(name = "Authorization") String token) throws UserNotFoundException {
+        ChatConversationDTO conservationDto = chatService.establishConversation(token, userDTO);
+
+        return new ResponseEntity<>(conservationDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/chat/getExistingConversations")
+    public ResponseEntity getExistingConversations(@RequestHeader(name = "Authorization") String token) throws UserNotFoundException {
+        List<ChatConversationDTO> dtos = chatService.getExistingConversations(token);
+
+        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+}
