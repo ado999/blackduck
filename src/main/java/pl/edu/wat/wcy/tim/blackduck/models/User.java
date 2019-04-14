@@ -55,7 +55,7 @@ public class User {
     private Set<User> followedUsers = new HashSet<>();
 
     // present -> has an active session in browser at the moment
-    private boolean present;
+    private String UUID;
 
     public User() {}
 
@@ -117,11 +117,11 @@ public class User {
         this.followedUsers = followedUsers;
     }
 
-    public boolean isPresent() {
-        return present;
+    public String getUUID() {
+        return UUID;
     }
 
-    public void setPresent(boolean present) {
-        this.present = present;
+    public void setUUID(String uuid) {
+        this.UUID = uuid;
     }
 }

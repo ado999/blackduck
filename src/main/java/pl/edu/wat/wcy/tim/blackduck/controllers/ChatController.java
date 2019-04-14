@@ -9,11 +9,10 @@ import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
-import pl.edu.wat.wcy.tim.blackduck.models.User;
+import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.services.ChatService;
-import pl.edu.wat.wcy.tim.blackduck.services.IChatService;
 
-import java.util.ArrayList;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -48,10 +47,17 @@ public class ChatController {
     }
 
     @GetMapping("/chat/getExistingConversations")
-    public ResponseEntity getExistingConversations(@RequestHeader(name = "Authorization") String token) throws UserNotFoundException {
+    public ResponseEntity getExistingConversations(@RequestHeader(name = "Authorization") String token, Principal principal) throws UserNotFoundException {
         List<ChatConversationDTO> dtos = chatService.getExistingConversations(token);
+        System.out.println(principal.getName());
 
         return new ResponseEntity<>(dtos, HttpStatus.OK);
+    }
+
+    @PostMapping("/chat/test")
+    public ResponseEntity test(@RequestBody LoginRequest dto){
+        chatService.test(dto);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

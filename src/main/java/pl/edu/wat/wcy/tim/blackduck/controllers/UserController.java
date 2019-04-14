@@ -3,10 +3,7 @@ package pl.edu.wat.wcy.tim.blackduck.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
@@ -15,6 +12,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 import javax.validation.Valid;
 
+@CrossOrigin
 @RestController
 public class UserController {
 
@@ -23,7 +21,7 @@ public class UserController {
 
 
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest){
 
         LoginResponse response = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
