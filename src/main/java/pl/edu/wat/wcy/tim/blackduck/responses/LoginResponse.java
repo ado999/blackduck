@@ -1,9 +1,5 @@
 package pl.edu.wat.wcy.tim.blackduck.responses;
 
-import org.springframework.security.core.GrantedAuthority;
-
-import java.util.Collection;
-
 //LoginResponse object will be returned by SpringBoot server once an authentication is successful, it contains:
 //1. JWT Token
 //2. Schema Type of Token
@@ -13,22 +9,20 @@ import java.util.Collection;
 public class LoginResponse {
     private String token;
     private String username;
+    private String UUID;
 
-    public LoginResponse(String accessToken, String username) {
+    public LoginResponse(String accessToken, String username, String uniqueId) {
         this.token = accessToken;
         this.username = username;
+        this.UUID = uniqueId;
     }
 
-    public LoginResponse(String accessToken) {
-        this.token = accessToken;
-    }
-
-    public String getAccessToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.token = accessToken;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getUsername() {
@@ -39,4 +33,11 @@ public class LoginResponse {
         this.username = username;
     }
 
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
 }

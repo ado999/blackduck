@@ -17,8 +17,4 @@ public interface IUserService {
     User getUser(String username);
 
     User getUser(int userId);
-
-    void setPresence(String username, boolean isPresent);
-
-    boolean isPresent(User recipientUser);
 }

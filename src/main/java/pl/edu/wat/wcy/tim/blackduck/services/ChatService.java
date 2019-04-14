@@ -1,6 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
@@ -13,6 +14,7 @@ import pl.edu.wat.wcy.tim.blackduck.models.User;
 import pl.edu.wat.wcy.tim.blackduck.repositories.ChatConversationRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.ChatMessageRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
+import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
 
@@ -25,16 +27,19 @@ public class ChatService implements IChatService {
     private final ChatMessageRepository messageRepository;
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Autowired
     public ChatService(ChatConversationRepository conversationRepository,
                        ChatMessageRepository messageRepository,
                        UserRepository userRepository,
-                       JwtProvider jwtProvider){
+                       JwtProvider jwtProvider,
+                       SimpMessagingTemplate messagingTemplate){
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @Override
@@ -51,7 +56,11 @@ public class ChatService implements IChatService {
 
         messageRepository.save(message);
 
-        //TODO: notify "User toUser about message"
+        String uid = message.getToUser().getUUID();
+        if(uid != null && !uid.equals(""))
+        messagingTemplate.convertAndSend(
+                "/socket-publisher/"+uid,
+                new ChatMessageDTO(message));
 
     }
 
@@ -90,4 +99,8 @@ public class ChatService implements IChatService {
         return dtos;
     }
 
+    public void test(LoginRequest dto) {
+        messagingTemplate.convertAndSend("/socket-publisher/"+dto.getUsername(),dto.getPassword());
+        System.out.println("test");
+    }
 }
