@@ -3,7 +3,7 @@ package pl.edu.wat.wcy.tim.blackduck.requests;
 public class ImageRequest {
     private String file;
     private String username;
-    private String orginalfilename;
+    private String originalfilename;
 
     public String getFile() {
         return file;
@@ -22,10 +22,10 @@ public class ImageRequest {
     }
 
     public String getOrginalfilename() {
-        return orginalfilename;
+        return originalfilename;
     }
 
     public void setOrginalfilename(String orginalfilename) {
-        this.orginalfilename = orginalfilename;
+        this.originalfilename = orginalfilename;
     }
 }

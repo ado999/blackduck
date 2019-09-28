@@ -31,7 +31,7 @@ public class ImageController {
     @Autowired
     ImageService imageService;
 
-    @PostMapping("/addimage")
+    @PostMapping("/addImage")
     public ResponseEntity<?> addImage(@Valid @RequestBody ImageRequest request) throws UserNotFoundException {
 
         ResponseMessage response = imageService.addImage(request);
@@ -43,7 +43,7 @@ public class ImageController {
         }
     }
 
-    @GetMapping("/getimage/{filename:.+}")
+    @GetMapping("/getImage/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         Resource file = imageService.loadFile(filename);
