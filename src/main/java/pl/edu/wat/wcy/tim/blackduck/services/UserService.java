@@ -25,6 +25,7 @@ import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService, IUserService {
@@ -68,9 +69,12 @@ public class UserService implements UserDetailsService, IUserService {
 
         User user = userRepository.findByUsernameOrEmail(username, username).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username));
+        String uniqueId = UUID.randomUUID().toString();
+        user.setUUID(uniqueId);
+        userRepository.save(user);
 
 
-        LoginResponse response = new LoginResponse("Bearer " + jwt, user.getUsername());
+        LoginResponse response = new LoginResponse("Bearer " + jwt, user.getUsername(), uniqueId);
         return response;
     }
 
@@ -114,17 +118,5 @@ public class UserService implements UserDetailsService, IUserService {
     public User getUser(int userId){
         return userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found with -> user Id : " + userId));
-    }
-
-    @Override
-    public void setPresence(String username, boolean isPresent) {
-        User user = getUser(username);
-        user.setPresent(isPresent);
-        userRepository.save(user);
-    }
-
-    @Override
-    public boolean isPresent(User recipientUser) {
-        return recipientUser.isPresent();
     }
 }
