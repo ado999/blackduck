@@ -40,15 +40,12 @@ public class FolderService {
     public void add (@Valid @RequestBody FolderRequest request, HttpServletRequest req) throws AuthenticationException {
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
         Folder folder1 = ObjectMapper.toObject(request);
-        //folder
         if(user.isPresent()){
             folder1.setOwner(user.get());
         } else {
             throw new AuthenticationException("User not found");
         }
         folderRepository.save(folder1);
-        //url
-        //contenttype
     }
 
     public FolderResponse getFolder(Integer id) throws IllegalArgumentException{

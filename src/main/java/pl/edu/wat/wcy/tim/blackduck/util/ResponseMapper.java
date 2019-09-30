@@ -42,14 +42,16 @@ public class ResponseMapper {
                 post.getCreationDate(),
                 post.getDescription(),
                 post.getRootFolder(),
-                post.getComments().stream().map(this::toResponse).collect(Collectors.toList()),
-                post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
+                post.getRate(),
+                post.getComments().stream().map(this::toResponse).collect(Collectors.toList())
+                //post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
 
         );
     }
 
-    private CommentResponse toResponse(Comment comment){
+    public CommentResponse toResponse(Comment comment){
         return new CommentResponse(
+                comment.getRootPost(),
                 toShortResponse(comment.getAuthor()),
                 comment.getContent(),
                 comment.getCreationDate()
@@ -59,7 +61,8 @@ public class ResponseMapper {
     private RateResponse toResponse(Rate rate){
         return new RateResponse(
                 rate.getRate(),
-                toShortResponse(rate.getFromUser())
+                toShortResponse(rate.getFromUser()),
+                rate.getRootPost().getId()
         );
     }
 

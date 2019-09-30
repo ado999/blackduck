@@ -8,9 +8,7 @@ import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
-import pl.edu.wat.wcy.tim.blackduck.requests.FolderRequest;
-import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
-import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.*;
 
 import javax.naming.AuthenticationException;
 import java.util.*;
@@ -88,7 +86,8 @@ public class ObjectMapper {
                 null,
                 new Date(),
                 request.getDescription(),
-                null
+                null,
+                0.0
         );
     }
 
@@ -99,4 +98,23 @@ public class ObjectMapper {
                 request.getDescription()
         );
     }
+
+    public static Comment toObject (CommentRequest request){
+        return new Comment(
+                null,
+                null,
+                request.getContent(),
+                new Date()
+        );
+    }
+
+    public static Rate toObject (RateRequest request){
+        return new Rate(
+                request.getRate(),
+                null,
+                null
+        );
+    }
+
+
 }

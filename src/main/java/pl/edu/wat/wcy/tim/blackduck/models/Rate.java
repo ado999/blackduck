@@ -1,19 +1,22 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "rates")
 @Data
+@NoArgsConstructor
 public class Rate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    private int rate; // int in 1..5
+    private int rate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
@@ -23,4 +26,9 @@ public class Rate {
     @JoinColumn(name = "post_id", nullable = false)
     private Post rootPost;
 
+    public Rate(int rate, User fromUser, Post rootPost) {
+        this.rate = rate;
+        this.fromUser = fromUser;
+        this.rootPost = rootPost;
+    }
 }

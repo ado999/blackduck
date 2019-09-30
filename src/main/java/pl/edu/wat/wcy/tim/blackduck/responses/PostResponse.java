@@ -2,6 +2,7 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.edu.wat.wcy.tim.blackduck.models.Folder;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PostResponse {
     private String title;
 
@@ -26,7 +28,9 @@ public class PostResponse {
 
     private Folder rootFolder;
 
+    private double rate;
+
     private List<CommentResponse> comments = new ArrayList<>();
 
-    private List<RateResponse> rates = new ArrayList<>();
+ //   private List<RateResponse> rates = new ArrayList<>();
 }

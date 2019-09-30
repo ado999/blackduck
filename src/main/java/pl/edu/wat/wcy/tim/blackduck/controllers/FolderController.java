@@ -24,7 +24,7 @@ public class FolderController {
         this.folderService = folderService;
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity addFolder (@Valid @RequestBody FolderRequest request, HttpServletRequest req){
         try {
             folderService.add(request, req);
@@ -34,7 +34,7 @@ public class FolderController {
         }
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity getFolder(@PathVariable Integer id){
         try {
             FolderResponse response = folderService.getFolder(id);
