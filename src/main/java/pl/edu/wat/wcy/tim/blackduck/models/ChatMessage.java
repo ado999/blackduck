@@ -1,5 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
+import lombok.Data;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "chat_messages")
+@Data
 public class ChatMessage {
 
     @Id
@@ -43,27 +45,5 @@ public class ChatMessage {
 
     public ChatMessage(){}
 
-    public int getId() {
-        return id;
-    }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public User getFromUser() {
-        return fromUser;
-    }
-
-    public User getToUser() {
-        return toUser;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public String getCid() {
-        return cid;
-    }
 }

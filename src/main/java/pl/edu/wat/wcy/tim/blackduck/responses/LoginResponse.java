@@ -6,6 +6,9 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 //3. Username
 //4. Array of Userâ€™s Authorities
 
+import lombok.Data;
+
+@Data
 public class LoginResponse {
     private String token;
     private String username;
@@ -15,29 +18,5 @@ public class LoginResponse {
         this.token = accessToken;
         this.username = username;
         this.UUID = uniqueId;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getUUID() {
-        return UUID;
-    }
-
-    public void setUUID(String UUID) {
-        this.UUID = UUID;
     }
 }

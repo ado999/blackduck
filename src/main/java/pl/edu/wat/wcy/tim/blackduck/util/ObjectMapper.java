@@ -1,18 +1,19 @@
 package pl.edu.wat.wcy.tim.blackduck.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
-import pl.edu.wat.wcy.tim.blackduck.models.ChatConversation;
-import pl.edu.wat.wcy.tim.blackduck.models.ChatMessage;
-import pl.edu.wat.wcy.tim.blackduck.models.User;
+import pl.edu.wat.wcy.tim.blackduck.models.*;
+import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
+import pl.edu.wat.wcy.tim.blackduck.requests.FolderRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import javax.naming.AuthenticationException;
+import java.util.*;
 
 public class ObjectMapper {
 
@@ -69,4 +70,33 @@ public class ObjectMapper {
         return dtos;
     }
 
+    public static User toObject(SignUpRequest request){
+        return new User(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getDescription()
+        );
+    }
+
+
+    public static Post toObject(PostRequest request) {
+        return new Post(
+                request.getTitle(),
+                null,
+                null,
+                null,
+                new Date(),
+                request.getDescription(),
+                null
+        );
+    }
+
+    public static Folder toObject(FolderRequest request){
+        return new Folder(
+                null,
+                request.getFolderName(),
+                request.getDescription()
+        );
+    }
 }

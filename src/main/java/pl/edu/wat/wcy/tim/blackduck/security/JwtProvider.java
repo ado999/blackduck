@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import pl.edu.wat.wcy.tim.blackduck.models.UserPrinciple;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
 //It gets username from Authentication object, then builds JWT Token with username, Date() object, secretKey
@@ -67,6 +68,14 @@ public class JwtProvider {
     public String resolveUsername(String bearerToken){
         String token = bearerToken.replace("Bearer ", "");
         return getUserNameFromJwtToken(token);
+    }
+
+    public String resolveToken(HttpServletRequest req) {
+        String bearerToken = req.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
     }
 
 }

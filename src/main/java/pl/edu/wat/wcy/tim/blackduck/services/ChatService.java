@@ -56,7 +56,7 @@ public class ChatService implements IChatService {
 
         messageRepository.save(message);
 
-        String uid = message.getToUser().getUUID();
+        String uid = message.getToUser().getUuid();
         if(uid != null && !uid.equals(""))
         messagingTemplate.convertAndSend(
                 "/socket-publisher/"+uid,

@@ -1,5 +1,8 @@
 package pl.edu.wat.wcy.tim.blackduck.responses;
 
+import lombok.Data;
+
+@Data
 public class ResponseMessage {
     private String message;
 
@@ -7,11 +10,4 @@ public class ResponseMessage {
         this.message = message;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

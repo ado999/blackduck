@@ -45,6 +45,7 @@ public class UserService implements UserDetailsService, IUserService {
     @Autowired
     PasswordEncoder encoder;
 
+
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -70,7 +71,6 @@ public class UserService implements UserDetailsService, IUserService {
         User user = userRepository.findByUsernameOrEmail(username, username).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username));
         String uniqueId = UUID.randomUUID().toString();
-        user.setUUID(uniqueId);
         userRepository.save(user);
 
 
@@ -89,7 +89,8 @@ public class UserService implements UserDetailsService, IUserService {
         }
 
         // Creating user's account
-        User user = new User(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
+        User user = ObjectMapper.toObject(request);
+        user.setPassword(encoder.encode(request.getPassword()));
 
         Set<Role> roles = new HashSet();
         roles.add(roleRepository.findByName(RoleName.USER).orElseThrow(
