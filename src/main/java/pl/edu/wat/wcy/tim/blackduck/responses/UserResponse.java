@@ -1,0 +1,36 @@
+package pl.edu.wat.wcy.tim.blackduck.responses;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+public class UserResponse {
+
+    private String uuid; //not displayed anywhere, identifies user, generated, immutable, unique
+
+    private String displayName; // eg. "AZxBlue96",
+
+    private String fullName; // eg. "Jan Kowalski"
+
+    private Date creationDate; // date of creation
+
+    private String profilePhotoUrl;
+
+    private String profileBacgroundUrl;
+
+    private String description; // eg. "Influencer, Horse lover, \n Warsaw, PL"
+
+    private String phoneNumber; // eg. "0700007096"
+
+    private List<FolderResponse> folders = new ArrayList<>();
+
+    private List<UserShortResponse> followers = new ArrayList<>(); // this user is followed by ...
+
+    private List<UserShortResponse> followedUsers = new ArrayList<>(); // this user follows ...
+
+}

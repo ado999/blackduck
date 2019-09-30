@@ -4,7 +4,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -29,22 +31,24 @@ public class Post {
 
     private String description;
 
-    public Post(String title, String contentUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootDirectory) {
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootPost")
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootPost")
+    private List<Rate> rates = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "folder_id", nullable = false)
+    private Folder rootFolder;
+
+    public Post(String title, String contentUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootFolder) {
         this.title = title;
         this.contentUrl = contentUrl;
         this.contentType = contentType;
         this.author = author;
         this.creationDate = creationDate;
         this.description = description;
-        this.rootDirectory = rootDirectory;
+        this.rootFolder = rootFolder;
     }
-
-    // private List<Comment> comments = new ArrayList<>();
-
-  //  private List<Rate> rates = new ArrayList<>();
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "folder_id", nullable = false)
-    private Folder rootDirectory;
 
 }

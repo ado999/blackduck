@@ -1,6 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
 import pl.edu.wat.wcy.tim.blackduck.util.RandomString;
 
@@ -8,10 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -23,6 +21,7 @@ import java.util.UUID;
         })
 })
 @Data
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,17 +52,15 @@ public class User {
 
     private String profileBacgroundUrl;
 
-    public User() {}
+    private String phoneNumber;
 
-    public User(String username, String email,String password, String description) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.description = description;
-        this.uuid = RandomString.generateUUID();
-    }
+    private String fullName;
 
-    @OneToMany(mappedBy="author")
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
+    private Set<Folder> folders = new HashSet<>();
+
+    @OneToMany(mappedBy = "author")
     private Set<Post> posts;
 
     //FetchType.LAZY == LOAD DATA ON DEMAND
@@ -82,5 +79,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "followed_user_id"))
     private Set<User> followedUsers = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "followers_of_user",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "followers"))
+    private Set<User> followers = new HashSet<>();
 
+    public User(String username, String email, String password, String description) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.description = description;
+        this.uuid = RandomString.generateUUID();
+    }
 }

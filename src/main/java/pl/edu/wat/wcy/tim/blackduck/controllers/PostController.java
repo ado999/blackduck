@@ -17,14 +17,14 @@ import javax.validation.Valid;
 @RequestMapping(value = "/posts")
 public class PostController {
 
-    PostService postService;
+    private final PostService postService;
 
     @Autowired
     public PostController(PostService postService){
         this.postService = postService;
     }
 
-    @PostMapping("/post")
+    @PostMapping
     public ResponseEntity sendPost (@Valid @RequestBody PostRequest request, HttpServletRequest req){
         try {
             postService.post(request, req);
@@ -34,13 +34,15 @@ public class PostController {
         }
     }
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity getPost(@PathVariable Integer id){
+    @GetMapping("/{id}")
+    public ResponseEntity getPost(@PathVariable Integer id, HttpServletRequest req){
         try {
-            PostResponse response = postService.getPost(id);
+            PostResponse response = postService.getPost(id, req);
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        } catch (AuthenticationException e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 }

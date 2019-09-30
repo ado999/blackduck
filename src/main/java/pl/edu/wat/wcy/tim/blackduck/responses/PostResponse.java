@@ -16,7 +16,7 @@ public class PostResponse {
 
     private String contentUrl;
 
-  //  private ContentTypeResponse contentType; //video/photo
+    private ContentTypeResponse contentType; //video/photo
 
     private UserShortResponse author;
 
@@ -24,9 +24,9 @@ public class PostResponse {
 
     private String description;
 
-    private Folder rootDirectory;
+    private Folder rootFolder;
 
-  //  private List<CommentResponse> comments = new ArrayList<>();
+    private List<CommentResponse> comments = new ArrayList<>();
 
-  //  private List<RateResponse> rates = new ArrayList<>();
+    private List<RateResponse> rates = new ArrayList<>();
 }

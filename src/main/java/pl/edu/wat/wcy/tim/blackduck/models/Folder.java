@@ -16,7 +16,7 @@ public class Folder {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "users", referencedColumnName = "id")
     private User owner; // obvious
 
@@ -25,7 +25,7 @@ public class Folder {
     @Size(max = 100)
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootDirectory")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootFolder")
     private List<Post> contentList; // files inside dir
 
     public Folder(User owner, String folderName, String description) {
