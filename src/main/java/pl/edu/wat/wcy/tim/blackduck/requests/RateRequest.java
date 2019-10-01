@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class RateRequest {
     private int rate;
-    private int post_id;
+    private int postId;
 }

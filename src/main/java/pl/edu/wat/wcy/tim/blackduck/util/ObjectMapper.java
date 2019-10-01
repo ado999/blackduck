@@ -86,8 +86,7 @@ public class ObjectMapper {
                 null,
                 new Date(),
                 request.getDescription(),
-                null,
-                0.0
+                null
         );
     }
 

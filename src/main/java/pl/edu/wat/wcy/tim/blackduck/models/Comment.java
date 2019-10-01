@@ -18,7 +18,7 @@ public class Comment {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "postId", nullable = false)
     private Post rootPost;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

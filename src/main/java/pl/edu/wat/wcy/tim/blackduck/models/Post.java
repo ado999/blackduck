@@ -2,7 +2,7 @@ package pl.edu.wat.wcy.tim.blackduck.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,6 +20,8 @@ public class Post {
     private int id;
 
     private String title;
+
+    //private MultipartFile file;
 
     private String contentUrl;
 
@@ -43,9 +45,9 @@ public class Post {
     @JoinColumn(name = "folder_id", nullable = false)
     private Folder rootFolder;
 
-    private double rate;
+    private double rate = 0d;
 
-    public Post(String title, String contentUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootFolder, double rate) {
+    public Post(String title, String contentUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootFolder) {
         this.title = title;
         this.contentUrl = contentUrl;
         this.contentType = contentType;
@@ -53,17 +55,6 @@ public class Post {
         this.creationDate = creationDate;
         this.description = description;
         this.rootFolder = rootFolder;
-        this.rate = rate;
-    }
-
-    public double getRate() {
-        int sum = 0;
-        double frate = 0.0;
-        for(Rate rate: rates){
-            sum += rate.getRate();
-        }
-        frate = sum/(rates.size());
-        return frate;
     }
 
 }

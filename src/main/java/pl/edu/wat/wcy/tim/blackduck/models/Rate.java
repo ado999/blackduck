@@ -23,7 +23,7 @@ public class Rate {
     private User fromUser;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "postId", nullable = false)
     private Post rootPost;
 
     public Rate(int rate, User fromUser, Post rootPost) {

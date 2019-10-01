@@ -28,9 +28,7 @@ public class PostResponse {
 
     private Folder rootFolder;
 
-    private double rate;
-
     private List<CommentResponse> comments = new ArrayList<>();
 
- //   private List<RateResponse> rates = new ArrayList<>();
+    private List<RateResponse> rates = new ArrayList<>();
 }

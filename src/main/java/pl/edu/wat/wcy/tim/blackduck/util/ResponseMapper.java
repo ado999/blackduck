@@ -42,10 +42,8 @@ public class ResponseMapper {
                 post.getCreationDate(),
                 post.getDescription(),
                 post.getRootFolder(),
-                post.getRate(),
-                post.getComments().stream().map(this::toResponse).collect(Collectors.toList())
-                //post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
-
+                post.getComments().stream().map(this::toResponse).collect(Collectors.toList()),
+                post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
         );
     }
 
