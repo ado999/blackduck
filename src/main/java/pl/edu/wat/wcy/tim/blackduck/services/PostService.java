@@ -108,7 +108,8 @@ public class PostService {
     public PostResponse getPost(Integer id, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException{
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()){
-            loadFile(post.get().getContentUrl());
+            //loadFile(post.get().getContentUrl());
+
             return responseMapper.toResponse(post.get());
         } else {
             throw new IllegalArgumentException("Post not found");

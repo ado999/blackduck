@@ -40,7 +40,6 @@ public class ResponseMapper {
                 toShortResponse(post.getAuthor()),
                 post.getCreationDate(),
                 post.getDescription(),
-                post.getRootFolder(),
                 post.getComments().stream().map(this::toResponse).collect(Collectors.toList()),
                 post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
         );
