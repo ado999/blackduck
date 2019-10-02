@@ -5,33 +5,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.edu.wat.wcy.tim.blackduck.models.*;
+import pl.edu.wat.wcy.tim.blackduck.models.ContentType;
+import pl.edu.wat.wcy.tim.blackduck.models.Folder;
+import pl.edu.wat.wcy.tim.blackduck.models.Post;
+import pl.edu.wat.wcy.tim.blackduck.models.User;
 import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.PostRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
-import pl.edu.wat.wcy.tim.blackduck.responses.CommentResponse;
 import pl.edu.wat.wcy.tim.blackduck.responses.PostResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
 import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
-
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,7 +58,7 @@ public class PostService {
         this.responseMapper = responseMapper;
     }
 
-    public void post (PostRequest request, HttpServletRequest req) throws AuthenticationException{
+    public void post(PostRequest request, HttpServletRequest req) throws AuthenticationException {
         validateRequest(req);
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
         Optional<Folder> folder = folderRepository.findById(request.getFolderId());
@@ -67,13 +66,13 @@ public class PostService {
         post.setAuthor(user.get());
 
         //FOLDER
-        if(folder.isPresent()){
+        if (folder.isPresent()) {
             post.setRootFolder(folder.get());
         } else {
             Optional<Folder> defaultFolder = folderRepository.findByOwnerAndFolderName(user.get(), "default");
-            if(defaultFolder.isPresent()){
+            if (defaultFolder.isPresent()) {
                 post.setRootFolder(defaultFolder.get());
-            }else {
+            } else {
                 Folder newFolder = new Folder(user.get(), "default", "default");
                 folderRepository.save(newFolder);
                 post.setRootFolder(newFolder);
@@ -93,11 +92,11 @@ public class PostService {
         System.out.println(fileType);
         ContentType contentType;
 
-        if(fileType.equals("png") || fileType.equals("jpg")){
+        if (fileType.toLowerCase().equals("png") || fileType.toLowerCase().equals("jpg")) {
             contentType = ContentType.PHOTO;
-        }else if(fileType.equals("mov") || fileType.equals("mp4")){
+        } else if (fileType.toLowerCase().equals("mov") || fileType.toLowerCase().equals("mp4")) {
             contentType = ContentType.VIDEO;
-        }else{
+        } else {
             throw new AuthenticationException("File not recognized");
         }
         post.setContentType(contentType);
@@ -105,9 +104,9 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostResponse getPost(Integer id, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException{
+    public PostResponse getPost(Integer id, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException {
         Optional<Post> post = postRepository.findById(id);
-        if (post.isPresent()){
+        if (post.isPresent()) {
             //loadFile(post.get().getContentUrl());
 
             return responseMapper.toResponse(post.get());
@@ -116,22 +115,23 @@ public class PostService {
         }
     }
 
-    private void validateRequest(HttpServletRequest req) throws AuthenticationException{
+    private User validateRequest(HttpServletRequest req) throws AuthenticationException {
         Optional<User> user = userRepository.findByUsername(
                 jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req))
         );
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             throw new AuthenticationException("User not found");
         }
+        return user.get();
     }
 
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private final Path rootLocation = Paths.get("\\upload-dir");
+    private final Path rootLocation = Paths.get(System.getProperty("user.dir") + "\\upload-dir");
 
     public void store(MultipartFile file) {
 
         try {
-            String location = System.getProperty("user.dir") + rootLocation + "\\" + file.getOriginalFilename();
+            String location = rootLocation + "\\" + file.getOriginalFilename();
             System.out.println(location);
             File fileToSave = new File(location);
             OutputStream os = new FileOutputStream(fileToSave);
@@ -164,10 +164,18 @@ public class PostService {
     public void init() {
         try {
             Files.createDirectory(rootLocation);
+            rootLocation.toFile().mkdirs();
+            System.out.println(rootLocation.toFile().getAbsolutePath());
         } catch (IOException e) {
             throw new RuntimeException("Could not initialize storage!");
         }
     }
 
 
+    public Page<PostResponse> getPosts(Pageable pageable, HttpServletRequest req) throws AuthenticationException {
+        User user = validateRequest(req);
+        Page<Post> posts = postRepository.findAllByAuthorInOrderByCreationDate(user.getFollowedUsers(), pageable);
+        return posts.map(p -> responseMapper.toResponse(p));
+
+    }
 }

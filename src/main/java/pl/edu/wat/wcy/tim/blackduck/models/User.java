@@ -67,8 +67,6 @@ public class User {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-
-    //HashSet == IT DOES NOT GUARANEE THAT THE ORDER WILL REMAIN CONSTANT
     private Set<Role> roles = new HashSet<>();
 
     //followedUsers -> this user follows users listed in "followedUsers"
@@ -77,12 +75,6 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "followed_user_id"))
     private Set<User> followedUsers = new HashSet<>();
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "followers_of_user",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "followers"))
-    private Set<User> followers = new HashSet<>();
 
 
     public User(String username, String fullName, String email, String password, String description, Date creationDate, String profilePhotoUrl, String profileBacgroundUrl) {

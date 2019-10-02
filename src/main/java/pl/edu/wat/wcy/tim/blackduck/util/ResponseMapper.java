@@ -18,7 +18,6 @@ public class ResponseMapper {
                 user.getProfileBacgroundUrl(),
                 user.getDescription(),
                 user.getFolders().stream().map(this::toResponse).collect(Collectors.toList()),
-                user.getFollowers().stream().map(this::toShortResponse).collect(Collectors.toList()),
                 user.getFollowedUsers().stream().map(this::toShortResponse).collect(Collectors.toList())
         );
     }

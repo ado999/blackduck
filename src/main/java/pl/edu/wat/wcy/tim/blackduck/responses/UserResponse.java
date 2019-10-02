@@ -29,8 +29,6 @@ public class UserResponse {
 
     private List<FolderResponse> folders = new ArrayList<>();
 
-    private List<UserShortResponse> followers = new ArrayList<>(); // this user is followed by ...
-
     private List<UserShortResponse> followedUsers = new ArrayList<>(); // this user follows ...
 
 }
