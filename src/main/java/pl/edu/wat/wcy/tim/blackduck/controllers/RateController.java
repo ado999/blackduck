@@ -34,13 +34,13 @@ public class RateController {
         }
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity getRate(@PathVariable Integer id, HttpServletRequest req){
-//        try {
-//            RateResponse response = rateService.getRate(id, req);
-//            return new ResponseEntity(response, HttpStatus.OK);
-//        } catch (IllegalArgumentException e) {
-//            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-//        }
-//    }
+    @GetMapping("/{id}")
+    public ResponseEntity getRate(@PathVariable Integer id, HttpServletRequest req){
+        try {
+            RateResponse response = rateService.getRate(id, req);
+            return new ResponseEntity(response, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
 }

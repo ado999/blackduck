@@ -67,16 +67,16 @@ public class PostController {
 //        }
 //    }
 
-
-    @GetMapping("/file/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = postService.loadFile(filename);
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
-    }
-
-
-    List<String> files = new ArrayList<String>();
+//
+//    @GetMapping("/file/{filename:.+}")
+//    @ResponseBody
+//    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+//        Resource file = postService.loadFile(filename);
+//        return ResponseEntity.ok()
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+//                .body(file);
+//    }
+//
+//
+//    List<String> files = new ArrayList<String>();
 }

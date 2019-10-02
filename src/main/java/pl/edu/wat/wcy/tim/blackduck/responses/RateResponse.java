@@ -13,6 +13,4 @@ public class RateResponse {
     private int rate;
 
     private UserShortResponse fromUser;
-
-    private int post_id;
 }

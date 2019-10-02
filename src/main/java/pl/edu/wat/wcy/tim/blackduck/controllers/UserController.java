@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @CrossOrigin
@@ -18,8 +21,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequest loginRequest){
@@ -38,6 +39,47 @@ public class UserController {
     @GetMapping("/followed")
     public ResponseEntity<UserDTO> getFollowedUsers(@RequestBody UserDTO dto){
         return new ResponseEntity(userService.getFollowedUsers(dto), HttpStatus.OK);
+    }
+
+
+    @PutMapping("/updateD")
+    public ResponseEntity updateDescription (@RequestBody String description, HttpServletRequest req){
+        try {
+            userService.updateDescription(description, req);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping("/updatePP")
+    public ResponseEntity updateProfilePicture (@RequestParam("file") MultipartFile file, HttpServletRequest req){
+        try {
+            userService.updateProfilePicture(file, req);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping("/updateBP")
+    public ResponseEntity updateBackgroundPicture (@RequestParam("file") MultipartFile file, HttpServletRequest req){
+        try {
+            userService.updateBackgroundPicture(file, req);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping("/updateP")
+    public ResponseEntity updatePassword(@RequestParam("password") String password, @RequestParam("oldPassword") String oldPassword, HttpServletRequest req){
+        try {
+            userService.updatePassword(oldPassword, password, req);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }

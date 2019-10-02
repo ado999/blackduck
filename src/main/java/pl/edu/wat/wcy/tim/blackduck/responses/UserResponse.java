@@ -2,6 +2,7 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserResponse {
 
     private String uuid; //not displayed anywhere, identifies user, generated, immutable, unique
@@ -24,8 +26,6 @@ public class UserResponse {
     private String profileBacgroundUrl;
 
     private String description; // eg. "Influencer, Horse lover, \n Warsaw, PL"
-
-    private String phoneNumber; // eg. "0700007096"
 
     private List<FolderResponse> folders = new ArrayList<>();
 

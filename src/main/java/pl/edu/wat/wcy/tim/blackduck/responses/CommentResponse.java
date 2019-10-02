@@ -12,7 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class CommentResponse {
 
-    private Post post;
+  //  private PostResponse post;
 
     private UserShortResponse author;
 

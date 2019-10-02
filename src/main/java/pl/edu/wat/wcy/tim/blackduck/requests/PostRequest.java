@@ -11,8 +11,6 @@ public class PostRequest {
 
     private String title;
 
-  //  private String body; // file zakodowany
-
     private MultipartFile file;
 
     private Integer folderId;

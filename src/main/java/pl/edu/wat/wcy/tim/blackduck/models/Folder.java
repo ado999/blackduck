@@ -1,5 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,7 @@ public class Folder {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootFolder")
+    @JsonManagedReference
     private List<Post> contentList; // files inside dir
 
     public Folder(User owner, String folderName, String description) {

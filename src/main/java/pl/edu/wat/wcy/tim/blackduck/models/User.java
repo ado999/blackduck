@@ -1,8 +1,10 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
+import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.wcy.tim.blackduck.util.RandomString;
 
 import javax.persistence.*;
@@ -46,16 +48,13 @@ public class User {
     @Size(max = 50)
     private String description;
 
-    private Date creationDate;
+    private Date creationDate = new Date();
 
     private String profilePhotoUrl;
 
     private String profileBacgroundUrl;
 
-    private String phoneNumber;
-
     private String fullName;
-
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
     private Set<Folder> folders = new HashSet<>();
@@ -85,11 +84,16 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "followers"))
     private Set<User> followers = new HashSet<>();
 
-    public User(String username, String email, String password, String description) {
+
+    public User(String username, String fullName, String email, String password, String description, Date creationDate, String profilePhotoUrl, String profileBacgroundUrl) {
         this.username = username;
+        this.fullName = fullName;
         this.email = email;
         this.password = password;
         this.description = description;
-        this.uuid = RandomString.generateUUID();
+        this.creationDate = creationDate;
+        this.profilePhotoUrl = profilePhotoUrl;
+        this.profileBacgroundUrl = profileBacgroundUrl;
+        this.uuid=RandomString.generateUUID();
     }
 }

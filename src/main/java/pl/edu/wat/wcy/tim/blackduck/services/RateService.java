@@ -2,6 +2,7 @@ package pl.edu.wat.wcy.tim.blackduck.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
 import pl.edu.wat.wcy.tim.blackduck.models.Rate;
@@ -10,6 +11,7 @@ import pl.edu.wat.wcy.tim.blackduck.repositories.PostRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.RateRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.RateRequest;
+import pl.edu.wat.wcy.tim.blackduck.responses.RateResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
 import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
@@ -73,15 +75,16 @@ public class RateService {
         postRepository.save(p);
 
     }
-//
-//    public RateResponse getRate(Integer id, HttpServletRequest req) throws IllegalArgumentException{
-//        Optional<Rate> rate = rateRepository.findById(id);
-//        if (rate.isPresent()){
-//            return responseMapper.toResponse(rate.get());
-//        } else {
-//            throw new IllegalArgumentException("Rate not found");
-//        }
-//    }
+
+    public RateResponse getRate(Integer id, HttpServletRequest req) throws IllegalArgumentException{
+        Optional<Rate> rate = rateRepository.findById(id);
+        if (rate.isPresent()){
+            Rate r = rate.get();
+            return responseMapper.toResponse(r);
+        } else {
+            throw new IllegalArgumentException("Rate not found");
+        }
+    }
 
     private void validateRequest(HttpServletRequest req) throws AuthenticationException{
         Optional<User> user = userRepository.findByUsername(

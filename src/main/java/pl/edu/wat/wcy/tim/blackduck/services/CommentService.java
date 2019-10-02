@@ -1,8 +1,12 @@
 package pl.edu.wat.wcy.tim.blackduck.services;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.edu.wat.wcy.tim.blackduck.models.Comment;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
@@ -18,6 +22,7 @@ import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -50,16 +55,17 @@ public class CommentService {
         comment.setAuthor(user.get());
         if(post.isPresent()){
             comment.setRootPost(post.get());
-        } else {
+            } else {
             throw new AuthenticationException("Comment not found");
         }
         commentRepository.save(comment);
     }
 
     public CommentResponse getComment(Integer id, HttpServletRequest req) throws IllegalArgumentException{
-        Optional<Comment> comment = commentRepository.findById(id);
+        Optional<Comment> comment = Optional.ofNullable(commentRepository.findCommentById(id));
         if (comment.isPresent()){
-            return responseMapper.toResponse(comment.get());
+            Comment com = comment.get();
+            return responseMapper.toResponse(com);
         } else {
             throw new IllegalArgumentException("Comment not found");
         }

@@ -1,5 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.util;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
@@ -31,7 +33,6 @@ public class ObjectMapper {
 
         return dtos;
     }
-
 
     public static ChatMessage chatMessageFromDto(ChatMessageDTO dto, UserRepository userRepository) throws UserNotFoundException {
         User fromUser = userRepository.findById(dto.getFromUserId()).orElseThrow(() -> new UserNotFoundException("User not found -> UserId: " + dto.getFromUserId()));
@@ -71,9 +72,13 @@ public class ObjectMapper {
     public static User toObject(SignUpRequest request){
         return new User(
                 request.getUsername(),
+                request.getFullName(),
                 request.getEmail(),
                 request.getPassword(),
-                request.getDescription()
+                request.getDescription(),
+                new Date(),
+                null,
+                null
         );
     }
 

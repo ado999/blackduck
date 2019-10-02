@@ -22,7 +22,7 @@ public class PostResponse {
 
     private UserShortResponse author;
 
-    private Date creationDate = new Date();
+    private Date creationDate;
 
     private String description;
 

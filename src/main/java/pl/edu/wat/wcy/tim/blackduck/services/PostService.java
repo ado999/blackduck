@@ -84,13 +84,14 @@ public class PostService {
 
         /////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //URL
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(rootLocation.toString()).path(request.getFile().getName()).toUriString();
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(request.getFile().getOriginalFilename()).toUriString();
+        System.out.println(url);
         post.setContentUrl(url);
 
         //CONTENT TYPE
         String fileType = request.getFile().getOriginalFilename().split("\\.")[1];
         System.out.println(fileType);
-        ContentType contentType = null;
+        ContentType contentType;
 
         if(fileType.equals("png") || fileType.equals("jpg")){
             contentType = ContentType.PHOTO;
@@ -135,10 +136,10 @@ public class PostService {
             OutputStream os = new FileOutputStream(fileToSave);
             os.write(file.getBytes());
             os.close();
+//        this.rootLocation.resolve(file.getOriginalFilename())
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
-//        this.rootLocation.resolve(file.getOriginalFilename())
     }
 
     public Resource loadFile(String filename) {

@@ -1,5 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +22,6 @@ public class Post {
     private int id;
 
     private String title;
-
-    //private MultipartFile file;
 
     private String contentUrl;
 
