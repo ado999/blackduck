@@ -1,3 +1,0 @@
-app:
-  jwtSecret: secret-key
-  jwtExpiration: 86400000
