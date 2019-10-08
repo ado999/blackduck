@@ -21,6 +21,8 @@ import pl.edu.wat.wcy.tim.blackduck.repositories.RoleRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.PostResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.UserResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
 import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
@@ -145,24 +147,15 @@ public class UserService implements UserDetailsService, IUserService {
         userRepository.save(update);
     }
 
-    public void updatePassword (String password, String oldPassword, HttpServletRequest req) throws AuthenticationException{
+    public void updatePassword (String password, HttpServletRequest req) throws AuthenticationException{
         validateRequest(req);
 
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
 
         User update = user.get();
 
-        String ep = update.getPassword();
-        CharSequence cs = oldPassword;
-        //boolean isMatch = encoder.matches(cs, ep);
-        boolean isMatch = (update.getPassword().equals(encoder.encode(oldPassword)));
-
-        if(isMatch==true){
-            String newPass = encoder.encode(password);
-            update.setPassword(newPass);
-        }else{
-            throw new AuthenticationException(update.getPassword() + "," + encoder.encode(oldPassword));
-        }
+        String newPass = encoder.encode(password);
+        update.setPassword(newPass);
 
         userRepository.save(update);
     }
@@ -215,6 +208,26 @@ public class UserService implements UserDetailsService, IUserService {
         return userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found with -> user Id : " + userId));
     }
+
+    public List<UserResponse> getUserSearch (String text){
+        List<User> results = new ArrayList<>();
+        List<User> users = userRepository.findAll();
+        for(User user : users){
+            if(user.getUsername().contains(text) || user.getUsername().equalsIgnoreCase(text)){
+                results.add(user);
+            }
+        }
+        if(results.size()==0){
+            throw new IllegalArgumentException("Post not found");
+        }
+
+        List<UserResponse> pr = new ArrayList<>();
+        for(User user : results) {
+            pr.add(responseMapper.toResponse((user)));
+        }
+        return pr;
+    }
+
 
 
     Logger log = LoggerFactory.getLogger(this.getClass().getName());

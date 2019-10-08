@@ -34,6 +34,8 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -57,6 +59,7 @@ public class PostService {
         this.jwtProvider = jwtProvider;
         this.responseMapper = responseMapper;
     }
+
 
     public void post(PostRequest request, HttpServletRequest req) throws AuthenticationException {
         validateRequest(req);
@@ -104,7 +107,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostResponse getPost(Integer id, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException {
+    public PostResponse getPost(Integer id) throws IllegalArgumentException{
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
             //loadFile(post.get().getContentUrl());
@@ -161,21 +164,30 @@ public class PostService {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
-    public void init() {
-        try {
-            Files.createDirectory(rootLocation);
-            rootLocation.toFile().mkdirs();
-            System.out.println(rootLocation.toFile().getAbsolutePath());
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage!");
-        }
-    }
-
-
     public Page<PostResponse> getPosts(Pageable pageable, HttpServletRequest req) throws AuthenticationException {
         User user = validateRequest(req);
         Page<Post> posts = postRepository.findAllByAuthorInOrderByCreationDate(user.getFollowedUsers(), pageable);
         return posts.map(p -> responseMapper.toResponse(p));
 
     }
+
+    public List<PostResponse> getPostSearch (String text){
+        List<Post> results = new ArrayList<>();
+        List<Post> posts = postRepository.findAll();
+        for(Post post : posts){
+            if(post.getTitle().contains(text) || post.getTitle().equalsIgnoreCase(text)){
+                results.add(post);
+            }
+        }
+        if(results.size()==0){
+            throw new IllegalArgumentException("Post not found");
+        }
+
+        List<PostResponse> pr = new ArrayList<>();
+        for(Post post : results) {
+            pr.add(responseMapper.toResponse(post));
+        }
+        return pr;
+    }
+
 }

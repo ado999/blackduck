@@ -10,11 +10,13 @@ import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
 import pl.edu.wat.wcy.tim.blackduck.responses.SignupResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.UserResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -80,13 +82,19 @@ public class UserController {
     }
 
     @PutMapping("/updateP")
-    public ResponseEntity updatePassword(@RequestParam("password") String password, @RequestParam("oldPassword") String oldPassword, HttpServletRequest req){
+    public ResponseEntity updatePassword(@RequestParam("password") String password, HttpServletRequest req){
         try {
-            userService.updatePassword(oldPassword, password, req);
+            userService.updatePassword(password, req);
             return new ResponseEntity(HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @GetMapping("/search/{text}")
+    public ResponseEntity getSearch(@PathVariable String text) {
+        List<UserResponse> response = userService.getUserSearch(text);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
 }
