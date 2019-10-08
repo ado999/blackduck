@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -21,6 +24,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
+    @Field
     private String title;
 
     private String contentUrl;

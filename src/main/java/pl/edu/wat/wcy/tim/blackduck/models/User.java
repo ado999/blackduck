@@ -1,10 +1,9 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.NaturalId;
-import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.wcy.tim.blackduck.util.RandomString;
 
 import javax.persistence.*;

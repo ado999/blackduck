@@ -1,12 +1,9 @@
 package pl.edu.wat.wcy.tim.blackduck.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.PostResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.PostService;
@@ -14,8 +11,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.PostService;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.ws.rs.core.HttpHeaders;
-import java.util.ArrayList;
+import javax.ws.rs.QueryParam;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -41,16 +37,21 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getPost(@PathVariable Integer id, HttpServletRequest req){
+    public ResponseEntity getPost(@PathVariable Integer id){
         try {
-            PostResponse response = postService.getPost(id, req);
+            PostResponse response = postService.getPost(id);
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        } catch (AuthenticationException e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
+
+    @GetMapping("/search/{text}")
+    public ResponseEntity getSearch(@PathVariable String text) {
+        List<PostResponse> response = postService.getPostSearch(text);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
 
 //    @PostMapping("/file")
 //    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
