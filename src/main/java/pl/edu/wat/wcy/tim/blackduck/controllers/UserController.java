@@ -9,6 +9,7 @@ import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.SignupResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 import javax.naming.AuthenticationException;
@@ -30,10 +31,16 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
 
-        userService.signup(signUpRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            userService.signup(signUpRequest);
+            return new ResponseEntity(new SignupResponse(true, null), HttpStatus.OK);
+        } catch (IllegalArgumentException e){
+            return new ResponseEntity(new SignupResponse(false, e.getMessage()), HttpStatus.OK);
+        } catch (RuntimeException e){
+            return new ResponseEntity(new SignupResponse(false, "Wystąpił nieznany błąd"), HttpStatus.OK);
+        }
     }
 
     @GetMapping("/followed")

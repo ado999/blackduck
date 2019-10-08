@@ -27,8 +27,8 @@ public class RateController {
     @PostMapping
     public ResponseEntity sendRate (@Valid @RequestBody RateRequest request, HttpServletRequest req){
         try {
-            rateService.add(request, req);
-            return new ResponseEntity(HttpStatus.OK);
+            double rate = rateService.add(request, req);
+            return new ResponseEntity(rate, HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }

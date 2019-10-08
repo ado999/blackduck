@@ -27,8 +27,4 @@ public class UserResponse {
 
     private String description; // eg. "Influencer, Horse lover, \n Warsaw, PL"
 
-    private List<FolderResponse> folders = new ArrayList<>();
-
-    private List<UserShortResponse> followedUsers = new ArrayList<>(); // this user follows ...
-
 }

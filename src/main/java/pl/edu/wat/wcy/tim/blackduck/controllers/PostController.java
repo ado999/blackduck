@@ -1,6 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.PostService;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.QueryParam;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -26,9 +28,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity getPosts(Pageable pageable, HttpServletRequest req) {
+    public ResponseEntity getPosts(@QueryParam("page") int page, @QueryParam("size") int size, HttpServletRequest req) {
         try {
-            return new ResponseEntity(postService.getPosts(pageable, req), HttpStatus.OK);
+            return new ResponseEntity(postService.getPosts(PageRequest.of(page, size), req), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -44,8 +46,8 @@ public class PostController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity getPost(@PathVariable Integer id, HttpServletRequest req) {
+    @GetMapping(value = "/post")
+    public ResponseEntity getPost(@QueryParam("id") int id, HttpServletRequest req) {
         try {
             PostResponse response = postService.getPost(id, req);
             return new ResponseEntity(response, HttpStatus.OK);

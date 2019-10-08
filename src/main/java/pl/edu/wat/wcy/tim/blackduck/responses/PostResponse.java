@@ -14,6 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostResponse {
+    private int id;
+
     private String title;
 
     private String contentUrl;
@@ -25,6 +27,8 @@ public class PostResponse {
     private Date creationDate;
 
     private String description;
+
+    private Double rate;
 
     private List<CommentResponse> comments = new ArrayList<>();
 

@@ -2,7 +2,9 @@ package pl.edu.wat.wcy.tim.blackduck.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.wcy.tim.blackduck.util.RandomString;
@@ -22,7 +24,8 @@ import java.util.*;
                 "email"
         })
 })
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class User {
     @Id
@@ -56,7 +59,7 @@ public class User {
 
     private String fullName;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "owner")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner")
     private Set<Folder> folders = new HashSet<>();
 
     @OneToMany(mappedBy = "author")

@@ -40,7 +40,7 @@ public class RateService {
         this.postRepository = postRepository;
     }
 
-    public void add (@Valid @RequestBody RateRequest request, HttpServletRequest req) throws AuthenticationException {
+    public double add (@Valid @RequestBody RateRequest request, HttpServletRequest req) throws AuthenticationException {
         validateRequest(req);
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
         Optional<Post> post = postRepository.findById(request.getPostId());
@@ -69,11 +69,11 @@ public class RateService {
         int sum = 0;
         List<Rate> rates = p.getRates();
         for(Rate r: rates){
-            sum += rate.getRate();
+            sum += r.getRate();
         }
         p.setRate((double)sum/rates.size());
         postRepository.save(p);
-
+        return (double)sum/rates.size();
     }
 
     public RateResponse getRate(Integer id, HttpServletRequest req) throws IllegalArgumentException{

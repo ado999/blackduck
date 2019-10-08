@@ -23,6 +23,7 @@ import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
+import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,9 @@ public class UserService implements UserDetailsService, IUserService {
     @Autowired
     PasswordEncoder encoder;
 
+    @Autowired
+    ResponseMapper responseMapper;
+
 
 
     @Override
@@ -80,15 +84,16 @@ public class UserService implements UserDetailsService, IUserService {
         User user = userRepository.findByUsernameOrEmail(username, username).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username));
         String uniqueId = UUID.randomUUID().toString();
+        user.setUuid(uniqueId);
         userRepository.save(user);
 
 
-        LoginResponse response = new LoginResponse("Bearer " + jwt, user.getUsername(), uniqueId);
+        LoginResponse response = new LoginResponse("Bearer " + jwt, responseMapper.toResponse(user));
         return response;
     }
 
     @Override
-    public boolean signup(SignUpRequest request){
+    public boolean signup(SignUpRequest request) throws IllegalArgumentException{
         if(userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username is already taken!");
         }

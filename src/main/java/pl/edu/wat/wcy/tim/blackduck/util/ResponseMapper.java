@@ -16,9 +16,7 @@ public class ResponseMapper {
                 user.getCreationDate(),
                 user.getProfilePhotoUrl(),
                 user.getProfileBacgroundUrl(),
-                user.getDescription(),
-                user.getFolders().stream().map(this::toResponse).collect(Collectors.toList()),
-                user.getFollowedUsers().stream().map(this::toShortResponse).collect(Collectors.toList())
+                user.getDescription()
         );
     }
 
@@ -33,12 +31,14 @@ public class ResponseMapper {
 
     public PostResponse toResponse(Post post) {
         return new PostResponse(
+                post.getId(),
                 post.getTitle(),
                 post.getContentUrl(),
                 toResponse(post.getContentType()),
                 toShortResponse(post.getAuthor()),
                 post.getCreationDate(),
                 post.getDescription(),
+                post.getRate(),
                 post.getComments().stream().map(this::toResponse).collect(Collectors.toList()),
                 post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
         );
