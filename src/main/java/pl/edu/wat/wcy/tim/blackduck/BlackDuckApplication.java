@@ -8,6 +8,7 @@ import pl.edu.wat.wcy.tim.blackduck.models.Role;
 import pl.edu.wat.wcy.tim.blackduck.models.RoleName;
 import pl.edu.wat.wcy.tim.blackduck.repositories.RoleRepository;
 import pl.edu.wat.wcy.tim.blackduck.services.PostService;
+import pl.edu.wat.wcy.tim.blackduck.util.Utils;
 
 import javax.annotation.Resource;
 
@@ -28,7 +29,7 @@ public class BlackDuckApplication implements CommandLineRunner {
     @Override
     public void run(String... arg) {
         postService.deleteAll();
-        postService.init();
+        Utils.createUploadDir();
         if (!roleRepository.existsByName(RoleName.USER))
             roleRepository.save(new Role(RoleName.USER));
     }

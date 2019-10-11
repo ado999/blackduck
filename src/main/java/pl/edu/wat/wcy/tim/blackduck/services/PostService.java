@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.edu.wat.wcy.tim.blackduck.models.ContentType;
-import pl.edu.wat.wcy.tim.blackduck.models.Folder;
-import pl.edu.wat.wcy.tim.blackduck.models.Post;
-import pl.edu.wat.wcy.tim.blackduck.models.User;
+import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
+import pl.edu.wat.wcy.tim.blackduck.repositories.HashtagRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.PostRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
@@ -51,13 +49,16 @@ public class PostService {
 
     ResponseMapper responseMapper;
 
+    HashtagRepository hashtagRepository;
+
     @Autowired
-    public PostService(UserRepository userRepository, PostRepository postRepository, FolderRepository folderRepository, JwtProvider jwtProvider, ResponseMapper responseMapper) {
+    public PostService(UserRepository userRepository, PostRepository postRepository, FolderRepository folderRepository, JwtProvider jwtProvider, ResponseMapper responseMapper, HashtagRepository hashtagRepository) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.folderRepository = folderRepository;
         this.jwtProvider = jwtProvider;
         this.responseMapper = responseMapper;
+        this.hashtagRepository = hashtagRepository;
     }
 
 
@@ -103,6 +104,35 @@ public class PostService {
             throw new AuthenticationException("File not recognized");
         }
         post.setContentType(contentType);
+
+        //VID URL
+        String vurl = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(request.getFile().getOriginalFilename()).toUriString();
+        System.out.println(vurl);
+        if (vurl != null && (fileType.toLowerCase().equals("png") || fileType.toLowerCase().equals("jpg"))) {
+            post.setVidPhotoUrl(vurl);
+        }else{
+            throw new AuthenticationException("File is not a type of photo");
+        }
+
+        //HASHTAGS
+        List<Hashtag> hashtagList = hashtagRepository.findAll();
+        List<Hashtag> finalH = new ArrayList<>();
+        Hashtag hashtag;
+        String whole = request.getDescription();
+        String[] splited = whole.split("\\s+");
+        for (String s: splited){
+            if(s.contains("#")){
+                hashtag = hashtagRepository.findByName(s);
+                finalH.add(hashtag);
+                if(!hashtagList.contains(hashtag)){
+                    Hashtag hash = new Hashtag();
+                    hash.setName(s);
+                    hashtagRepository.save(hash);
+                    finalH.add(hash);
+                }
+            }
+        }
+        post.setHashtags(finalH);
 
         postRepository.save(post);
     }
@@ -177,7 +207,13 @@ public class PostService {
         for(Post post : posts){
             if(post.getTitle().contains(text) || post.getTitle().equalsIgnoreCase(text)){
                 results.add(post);
-            }
+            }/*else{
+                for (Hashtag s : post.getHashtags()){
+                    if (s.contains(text) || s.equalsIgnoreCase(text)){
+                        results.add(post);
+                    }
+                }
+            }*/
         }
         if(results.size()==0){
             throw new IllegalArgumentException("Post not found");
@@ -189,5 +225,6 @@ public class PostService {
         }
         return pr;
     }
+
 
 }

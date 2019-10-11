@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.edu.wat.wcy.tim.blackduck.models.Folder;
+import pl.edu.wat.wcy.tim.blackduck.models.Hashtag;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
 
 import java.util.ArrayList;
@@ -28,9 +29,12 @@ public class PostResponse {
 
     private String description;
 
+    private List<HashtagResponse> hashtags;
+
     private Double rate;
 
     private List<CommentResponse> comments = new ArrayList<>();
 
     private List<RateResponse> rates = new ArrayList<>();
+
 }

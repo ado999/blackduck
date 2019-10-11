@@ -16,12 +16,14 @@ import java.util.List;
 @NoArgsConstructor
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private String title;
 
     private String contentUrl;
+
+    private String vidPhotoUrl;
 
     private ContentType contentType; //video/photo
 
@@ -32,6 +34,9 @@ public class Post {
     private Date creationDate = new Date();
 
     private String description;
+
+    @ManyToMany
+    private List<Hashtag> hashtags;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootPost")
     private List<Comment> comments = new ArrayList<>();
@@ -45,7 +50,7 @@ public class Post {
 
     private double rate = 0d;
 
-    public Post(String title, String contentUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootFolder) {
+    public Post(String title, String contentUrl, String vidPhotoUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootFolder) {
         this.title = title;
         this.contentUrl = contentUrl;
         this.contentType = contentType;
@@ -53,6 +58,7 @@ public class Post {
         this.creationDate = creationDate;
         this.description = description;
         this.rootFolder = rootFolder;
+        this.vidPhotoUrl = vidPhotoUrl;
     }
 
 }
