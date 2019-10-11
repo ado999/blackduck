@@ -107,6 +107,8 @@ public class UserService implements UserDetailsService, IUserService {
         // Creating user's account
         User user = ObjectMapper.toObject(request);
         user.setPassword(encoder.encode(request.getPassword()));
+        user.setProfilePhotoUrl("https://www.medaid.co.uk/wp-content/uploads/2019/04/default.jpg");
+        user.setProfileBacgroundUrl("http://www.allwhitebackground.com/images/2/2270.jpg");
 
         Set<Role> roles = new HashSet();
         roles.add(roleRepository.findByName(RoleName.USER).orElseThrow(
