@@ -28,8 +28,8 @@ public class CommentController {
     @PostMapping
     public ResponseEntity sendComment (@Valid @RequestBody CommentRequest request, HttpServletRequest req){
         try {
-            commentService.post(request, req);
-            return new ResponseEntity(HttpStatus.OK);
+            CommentResponse response = commentService.post(request, req);
+            return new ResponseEntity(response, HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }

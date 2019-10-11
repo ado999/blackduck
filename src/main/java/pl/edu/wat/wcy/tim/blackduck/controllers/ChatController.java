@@ -4,15 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
+import pl.edu.wat.wcy.tim.blackduck.requests.ChatMessageRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.GetMessagesRequest;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatConversationResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatMessageResponse;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.services.ChatService;
 
-import java.security.Principal;
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -25,33 +28,37 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @PostMapping("/chat/sendMessage")
-    public ResponseEntity receiveMessage(@RequestBody ChatMessageDTO chatMessageDTO, @RequestHeader(name = "Authorization") String token) throws UserNotFoundException, MessageMalformedException {
-        chatService.receiveMessage(chatMessageDTO, token);
-
-        return new ResponseEntity(HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity sendMessage(@RequestBody ChatMessageRequest chatMessageRequest, HttpServletRequest req) throws UserNotFoundException, MessageMalformedException {
+        try {
+            ChatMessageResponse response = chatService.sendMessage(chatMessageRequest, req);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @GetMapping("/chat/getMessages")
-    public ResponseEntity getMessages(@RequestHeader(name = "Authorization") String token) throws UserNotFoundException {
-        List<ChatMessageDTO> messages = chatService.getExistingMessages(token);
-
-        return new ResponseEntity<>(messages, HttpStatus.OK);
+    @PostMapping("/chat/messages")
+    public ResponseEntity getMessages(@RequestBody GetMessagesRequest getMessagesRequest, HttpServletRequest req) {
+        List<ChatMessageResponse> messages;
+        try {
+            messages = chatService.getExistingMessages(getMessagesRequest, req);
+            return new ResponseEntity<>(messages, HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping("/chat/establishConversation")
-    public ResponseEntity establishConversation(@RequestBody UserDTO userDTO, @RequestHeader(name = "Authorization") String token) throws UserNotFoundException {
-        ChatConversationDTO conservationDto = chatService.establishConversation(token, userDTO);
+    @GetMapping("/chat/conversations")
+    public ResponseEntity getExistingConversations(HttpServletRequest req) {
 
-        return new ResponseEntity<>(conservationDto, HttpStatus.OK);
-    }
-
-    @GetMapping("/chat/getExistingConversations")
-    public ResponseEntity getExistingConversations(@RequestHeader(name = "Authorization") String token, Principal principal) throws UserNotFoundException {
-        List<ChatConversationDTO> dtos = chatService.getExistingConversations(token);
-        System.out.println(principal.getName());
-
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+        List<ChatConversationResponse> dtos;
+        try {
+            dtos = chatService.getExistingConversations(req);
+            return new ResponseEntity<>(dtos, HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/chat/test")

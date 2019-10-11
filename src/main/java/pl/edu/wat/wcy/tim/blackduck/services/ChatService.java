@@ -3,8 +3,10 @@ package pl.edu.wat.wcy.tim.blackduck.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
+import pl.edu.wat.wcy.tim.blackduck.requests.ChatMessageRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.GetMessagesRequest;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatConversationResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatMessageResponse;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
@@ -17,8 +19,15 @@ import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
+import pl.edu.wat.wcy.tim.blackduck.util.RequestValidationComponent;
+import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatService implements IChatService {
@@ -28,31 +37,43 @@ public class ChatService implements IChatService {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final SimpMessagingTemplate messagingTemplate;
+    private final RequestValidationComponent validationComponent;
+    private final ResponseMapper responseMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public ChatService(ChatConversationRepository conversationRepository,
                        ChatMessageRepository messageRepository,
                        UserRepository userRepository,
                        JwtProvider jwtProvider,
-                       SimpMessagingTemplate messagingTemplate){
+                       SimpMessagingTemplate messagingTemplate,
+                       RequestValidationComponent validationComponent,
+                       ResponseMapper responseMapper,
+                       ObjectMapper objectMapper
+    ){
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.messagingTemplate = messagingTemplate;
+        this.validationComponent = validationComponent;
+        this.responseMapper = responseMapper;
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public void receiveMessage(ChatMessageDTO dto, String token) throws UserNotFoundException, MessageMalformedException {
+    public ChatMessageResponse sendMessage(ChatMessageRequest request , HttpServletRequest req) throws UserNotFoundException, AuthenticationException {
 
-        User user = userRepository.findByUsername(jwtProvider.resolveUsername(token)).orElseThrow(()-> new UserNotFoundException("User not found"));
+        User user = validationComponent.validateRequest(req);
 
-        ChatMessage message = ObjectMapper.chatMessageFromDto(dto, userRepository);
-        ChatConversation conversation = conversationRepository.findByUser1AndUser2(message.getFromUser(), message.getToUser());
+        ChatMessage message = objectMapper.toObject(request);
+        message.setFromUser(user);
+        Optional<ChatConversation> chatConversationOpt =
+                conversationRepository.findByUser1AndUser2(message.getFromUser(), message.getToUser());
 
-        if(!conversation.getCid().equals(message.getCid()) || message.getCid().equals(""))
-            throw new MessageMalformedException("Conversation not found -> ConservationId: " + message.getCid());
-        if(message.getFromUser() != user || message.getToUser() == user) throw new MessageMalformedException("You shall not pass");
+        if(!chatConversationOpt.isPresent()){
+            createConversation(message);
+        }
 
         messageRepository.save(message);
 
@@ -60,43 +81,44 @@ public class ChatService implements IChatService {
         if(uid != null && !uid.equals(""))
         messagingTemplate.convertAndSend(
                 "/socket-publisher/"+uid,
-                new ChatMessageDTO(message));
+                responseMapper.toResponse(message));
 
+        return responseMapper.toResponse(message);
     }
 
     @Override
-    public List<ChatMessageDTO> getExistingMessages(String token) throws UserNotFoundException {
-        User user = userRepository.findByUsername(jwtProvider.resolveUsername(token)).orElseThrow(
-                ()-> new UserNotFoundException("User not found"));
-        List<ChatMessage> messages = messageRepository.findByToUserOrFromUser(user, user);
+    public List<ChatMessageResponse> getExistingMessages(GetMessagesRequest getMessagesRequest, HttpServletRequest req) throws AuthenticationException {
+        User user = validationComponent.validateRequest(req);
+        Optional<User> toUserOpt = userRepository.findByUsername(getMessagesRequest.getToUserUsername());
 
+        if(toUserOpt.isPresent()){
+            List<ChatMessage> messages = messageRepository.findAllByFromUserAndToUser(user, toUserOpt.get());
 
-        return ObjectMapper.dtosFromChatMessages(messages);
-    }
-
-    @Override
-    public ChatConversationDTO establishConversation(String token, UserDTO userDTO) throws UserNotFoundException {
-        User user = userRepository.findByUsername(jwtProvider.resolveUsername(token)).orElseThrow(
-                ()-> new UserNotFoundException("User not found"));
-        User user1 = userRepository.findById(userDTO.getUserId()).orElseThrow(
-                ()-> new UserNotFoundException("User not found -> UserId: " + userDTO.getUserId()));
-
-        ChatConversation conversation = conversationRepository.findByUser1AndUser2(user, user1);
-        if(conversation == null){
-            conversation = new ChatConversation(user, user1);
-            conversationRepository.save(conversation);
+            return messages.stream()
+                    .map(responseMapper::toResponse)
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
         }
-
-        return new ChatConversationDTO(conversation);
     }
 
     @Override
-    public List<ChatConversationDTO> getExistingConversations(String token) throws UserNotFoundException {
-        User user = userRepository.findByUsername(jwtProvider.resolveUsername(token)).orElseThrow(
-                ()-> new UserNotFoundException("User not found"));
+    public List<ChatConversationResponse> getExistingConversations(HttpServletRequest req) throws AuthenticationException {
+
+        User user = validationComponent.validateRequest(req);
+
         List<ChatConversation> conversations = conversationRepository.findByUser1OrUser2(user, user);
-        List<ChatConversationDTO> dtos = ObjectMapper.dtosFromChatConversations(conversations);
-        return dtos;
+        return conversations.stream()
+                .map(responseMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    private void createConversation(ChatMessage message) throws UserNotFoundException {
+        ChatConversation conversation = new ChatConversation(
+                message.getFromUser(),
+                message.getToUser()
+        );
+        conversationRepository.save(conversation);
     }
 
     public void test(LoginRequest dto) {

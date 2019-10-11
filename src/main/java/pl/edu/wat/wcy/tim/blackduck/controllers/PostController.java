@@ -62,6 +62,15 @@ public class PostController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
+    @GetMapping("/my")
+    public ResponseEntity myPosts(HttpServletRequest req){
+        try {
+            return new ResponseEntity(postService.myPosts(req), HttpStatus.OK);
+        } catch (AuthenticationException e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 //    @PostMapping("/file")
 //    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {

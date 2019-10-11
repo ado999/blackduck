@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,4 +18,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Post findByAuthor(User user);
 
     Page<Post> findAllByAuthorInOrderByCreationDate(Set<User> author, Pageable pageable);
+
+    List<Post> findAllByAuthor(User user);
 }

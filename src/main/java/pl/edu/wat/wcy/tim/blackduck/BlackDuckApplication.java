@@ -27,8 +27,6 @@ public class BlackDuckApplication implements CommandLineRunner {
 
     @Override
     public void run(String... arg) {
-        postService.deleteAll();
-        postService.init();
         if (!roleRepository.existsByName(RoleName.USER))
             roleRepository.save(new Role(RoleName.USER));
     }

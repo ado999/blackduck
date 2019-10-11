@@ -6,14 +6,15 @@ import lombok.Data;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
 public class UserShortResponse {
 
-    private String uuid; //not displayed anywhere, identifies user, generated, immutable, unique
-
     private String username;
 
     private String profilePhotoUrl;
+
+    private Date lastActivity;
 }

@@ -12,7 +12,6 @@ import java.util.Set;
 public interface IUserService {
     LoginResponse login(String username, String password);
     boolean signup(SignUpRequest request);
-    Set<UserDTO> getFollowedUsers(UserDTO dto);
 
     User getUser(String username);
 

@@ -2,12 +2,14 @@ package pl.edu.wat.wcy.tim.blackduck.util;
 
 import org.springframework.stereotype.Component;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
+import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.responses.*;
 
 import java.util.stream.Collectors;
 
 @Component
 public class ResponseMapper {
+
     public UserResponse toResponse(User user) {
         return new UserResponse(
                 user.getUuid(),
@@ -46,7 +48,6 @@ public class ResponseMapper {
 
     public CommentResponse toResponse(Comment comment){
         return new CommentResponse(
-               // toResponse(comment.getRootPost()),
                 toShortResponse(comment.getAuthor()),
                 comment.getContent(),
                 comment.getCreationDate()
@@ -60,15 +61,34 @@ public class ResponseMapper {
         );
     }
 
-    private UserShortResponse toShortResponse(User user){
+    public ChatConversationResponse toResponse(ChatConversation chatConversation){
+        return new ChatConversationResponse(
+                chatConversation.getCid(),
+                toShortResponse(chatConversation.getUser1()),
+                toShortResponse(chatConversation.getUser2())
+        );
+    }
+
+    public ChatMessageResponse toResponse(ChatMessage chatMessage){
+        return new ChatMessageResponse(
+                chatMessage.getId(),
+                chatMessage.getMessage(),
+                toShortResponse(chatMessage.getFromUser()),
+                toShortResponse(chatMessage.getToUser()),
+                chatMessage.getDate()
+        );
+    }
+
+    public UserShortResponse toShortResponse(User user){
         return new UserShortResponse(
-                user.getUuid(),
                 user.getUsername(),
-                user.getProfilePhotoUrl()
+                user.getProfilePhotoUrl(),
+                user.getLastActivityDate()
         );
     }
 
     private ContentTypeResponse toResponse(ContentType contentType){
         return ContentTypeResponse.valueOf(contentType.name());
     }
+
 }

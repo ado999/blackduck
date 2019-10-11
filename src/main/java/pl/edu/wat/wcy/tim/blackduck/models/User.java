@@ -52,6 +52,8 @@ public class User {
 
     private Date creationDate = new Date();
 
+    private Date lastActivityDate = new Date();
+
     private String profilePhotoUrl;
 
     private String profileBacgroundUrl;

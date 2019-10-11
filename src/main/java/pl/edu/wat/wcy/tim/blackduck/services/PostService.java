@@ -22,6 +22,7 @@ import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.PostResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
+import pl.edu.wat.wcy.tim.blackduck.util.RequestValidationComponent;
 import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
 import javax.naming.AuthenticationException;
@@ -37,32 +38,38 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
     UserRepository userRepository;
-
     PostRepository postRepository;
-
     FolderRepository folderRepository;
-
     JwtProvider jwtProvider;
-
     ResponseMapper responseMapper;
+    RequestValidationComponent validationComponent;
 
     @Autowired
-    public PostService(UserRepository userRepository, PostRepository postRepository, FolderRepository folderRepository, JwtProvider jwtProvider, ResponseMapper responseMapper) {
+    public PostService(
+            UserRepository userRepository,
+            PostRepository postRepository,
+            FolderRepository folderRepository,
+            JwtProvider jwtProvider,
+            ResponseMapper responseMapper,
+            RequestValidationComponent validationComponent
+    ) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.folderRepository = folderRepository;
         this.jwtProvider = jwtProvider;
         this.responseMapper = responseMapper;
+        this.validationComponent = validationComponent;
     }
 
 
     public void post(PostRequest request, HttpServletRequest req) throws AuthenticationException {
-        validateRequest(req);
+        validationComponent.validateRequest(req);
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
         Optional<Folder> folder = folderRepository.findById(request.getFolderId());
         Post post = ObjectMapper.toObject(request);
@@ -118,16 +125,6 @@ public class PostService {
         }
     }
 
-    private User validateRequest(HttpServletRequest req) throws AuthenticationException {
-        Optional<User> user = userRepository.findByUsername(
-                jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req))
-        );
-        if (!user.isPresent()) {
-            throw new AuthenticationException("User not found");
-        }
-        return user.get();
-    }
-
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private final Path rootLocation = Paths.get(System.getProperty("user.dir") + "\\upload-dir");
 
@@ -165,7 +162,7 @@ public class PostService {
     }
 
     public Page<PostResponse> getPosts(Pageable pageable, HttpServletRequest req) throws AuthenticationException {
-        User user = validateRequest(req);
+        User user = validationComponent.validateRequest(req);
         Page<Post> posts = postRepository.findAllByAuthorInOrderByCreationDate(user.getFollowedUsers(), pageable);
         return posts.map(p -> responseMapper.toResponse(p));
 
@@ -190,4 +187,8 @@ public class PostService {
         return pr;
     }
 
+    public List<PostResponse> myPosts(HttpServletRequest req) throws AuthenticationException {
+        User user = validationComponent.validateRequest(req);
+        return postRepository.findAllByAuthor(user).stream().map(it -> responseMapper.toResponse(it)).collect(Collectors.toList());
+    }
 }

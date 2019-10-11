@@ -48,7 +48,7 @@ public class CommentService {
         this.responseMapper = responseMapper;
     }
 
-    public void post (@Valid @RequestBody CommentRequest request, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException {
+    public CommentResponse post (@Valid @RequestBody CommentRequest request, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException {
         validateRequest(req);
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
         Optional<Post> post = postRepository.findById(request.getPostId());
@@ -60,6 +60,7 @@ public class CommentService {
             throw new AuthenticationException("Comment not found");
         }
         commentRepository.save(comment);
+        return responseMapper.toResponse(comment);
     }
 
     public CommentResponse getComment(Integer id, HttpServletRequest req) throws IllegalArgumentException{

@@ -1,75 +1,47 @@
 package pl.edu.wat.wcy.tim.blackduck.util;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
+import org.springframework.stereotype.Component;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
-import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.*;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatMessageResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.UserShortResponse;
 
-import javax.naming.AuthenticationException;
-import java.util.*;
+import java.util.Date;
+import java.util.Optional;
 
+@Component
 public class ObjectMapper {
 
-    public static UserDTO dtoFromUser(User user){
-        UserDTO dto = new UserDTO();
-        dto.setUserId(user.getId());
-        dto.setUsername(user.getUsername());
+    private final UserRepository userRepository;
 
-        return dto;
+    @Autowired
+    public ObjectMapper(
+            UserRepository userRepository
+    ){
+        this.userRepository = userRepository;
     }
 
-    public static Set<UserDTO> dtosFromUsers(Set<User> users){
-        Set<UserDTO> dtos = new HashSet<>();
-        for(User user: users){
-            dtos.add(dtoFromUser(user));
+    public User toObject(UserShortResponse userShortResponse) throws UserNotFoundException {
+        Optional<User> user = userRepository.findByUsername(userShortResponse.getUsername());
+        if(user.isPresent()){
+            return user.get();
+        } else {
+            throw new UserNotFoundException("Cannot find user");
         }
-
-        return dtos;
     }
 
-    public static ChatMessage chatMessageFromDto(ChatMessageDTO dto, UserRepository userRepository) throws UserNotFoundException {
-        User fromUser = userRepository.findById(dto.getFromUserId()).orElseThrow(() -> new UserNotFoundException("User not found -> UserId: " + dto.getFromUserId()));
-        User toUser = userRepository.findById(dto.getToUserId()).orElseThrow(() -> new UserNotFoundException("User not found -> UserId: " + dto.getToUserId()));
+    public ChatMessage toObject(ChatMessageRequest request) throws UserNotFoundException {
+        User toUser = userRepository.findByUsername(request.getToUser()).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        ChatMessage message = new ChatMessage(fromUser, toUser, dto.getMessage(), dto.getCid());
+        ChatMessage message = new ChatMessage(null, toUser, request.getMessage());
 
         return message;
     }
 
-    public static ChatMessageDTO dtoFromChatMessage(ChatMessage message){
-        return new ChatMessageDTO(message);
-    }
-
-    public static List<ChatMessageDTO> dtosFromChatMessages(List<ChatMessage> messages){
-        ArrayList<ChatMessageDTO> dtos = new ArrayList<>();
-
-        for(ChatMessage message : messages){
-            dtos.add(dtoFromChatMessage(message));
-        }
-        return dtos;
-    }
-
-    public static ChatConversationDTO dtoFromChatConversation(ChatConversation conversation){
-        return new ChatConversationDTO(conversation);
-    }
-
-    public static List<ChatConversationDTO> dtosFromChatConversations(List<ChatConversation> conversations){
-        ArrayList<ChatConversationDTO> dtos = new ArrayList<>();
-
-        for(ChatConversation conversation : conversations){
-            dtos.add(dtoFromChatConversation(conversation));
-        }
-        return dtos;
-    }
-
-    public static User toObject(SignUpRequest request){
+    public User toObject(SignUpRequest request){
         return new User(
                 request.getUsername(),
                 request.getFullName(),

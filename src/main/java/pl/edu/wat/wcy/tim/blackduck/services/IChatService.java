@@ -1,22 +1,24 @@
 package pl.edu.wat.wcy.tim.blackduck.services;
 
 import org.springframework.stereotype.Service;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatConversationDTO;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.ChatMessageDTO;
+import pl.edu.wat.wcy.tim.blackduck.requests.ChatMessageRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.GetMessagesRequest;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatConversationResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.ChatMessageResponse;
 import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
 public interface IChatService {
 
-    void receiveMessage(ChatMessageDTO dto, String token) throws UserNotFoundException, MessageMalformedException;
+    ChatMessageResponse sendMessage(ChatMessageRequest request , HttpServletRequest req) throws UserNotFoundException, AuthenticationException;
 
-    List<ChatMessageDTO> getExistingMessages(String token) throws UserNotFoundException;
+    List<ChatMessageResponse> getExistingMessages(GetMessagesRequest getMessagesRequest, HttpServletRequest req) throws UserNotFoundException, AuthenticationException;
 
-    ChatConversationDTO establishConversation(String token, UserDTO userDTO) throws UserNotFoundException;
-
-    List<ChatConversationDTO> getExistingConversations(String token) throws UserNotFoundException;
+    List<ChatConversationResponse> getExistingConversations(HttpServletRequest req) throws AuthenticationException;
 }

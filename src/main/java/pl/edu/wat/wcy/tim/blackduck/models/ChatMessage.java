@@ -32,18 +32,12 @@ public class ChatMessage {
     @NotNull
     private Date date;
 
-    @NotNull
-    private String cid;
-
-    public ChatMessage(User fromUser, User toUser, String message, String cid){
+    public ChatMessage(User fromUser, User toUser, String message){
        this.fromUser = fromUser;
        this.toUser = toUser;
        this.message = message;
-       this.cid = cid;
        this.date = new Date();
     }
 
     public ChatMessage(){}
-
-
 }

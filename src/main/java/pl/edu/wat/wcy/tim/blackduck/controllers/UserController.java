@@ -45,9 +45,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/followed")
-    public ResponseEntity<UserDTO> getFollowedUsers(@RequestBody UserDTO dto){
-        return new ResponseEntity(userService.getFollowedUsers(dto), HttpStatus.OK);
+    @GetMapping("/followers")
+    public ResponseEntity followers(HttpServletRequest req){
+        try {
+            return new ResponseEntity(userService.followers(req), HttpStatus.OK);
+        } catch (AuthenticationException e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/followedUsers")
+    public ResponseEntity followedUsers(HttpServletRequest req){
+        try {
+            return new ResponseEntity(userService.followedUsers(req), HttpStatus.OK);
+        } catch (AuthenticationException e){
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 
