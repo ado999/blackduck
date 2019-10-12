@@ -40,9 +40,16 @@ public class ResponseMapper {
                 toShortResponse(post.getAuthor()),
                 post.getCreationDate(),
                 post.getDescription(),
+                post.getHashtags().stream().map(this::toResponse).collect(Collectors.toList()),
                 post.getRate(),
                 post.getComments().stream().map(this::toResponse).collect(Collectors.toList()),
                 post.getRates().stream().map(this::toResponse).collect(Collectors.toList())
+        );
+    }
+
+    public HashtagResponse toResponse(Hashtag hashtag){
+        return new HashtagResponse(
+                hashtag.getName()
         );
     }
 

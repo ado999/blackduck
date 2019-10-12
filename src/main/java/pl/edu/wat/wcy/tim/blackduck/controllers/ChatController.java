@@ -28,7 +28,7 @@ public class ChatController {
         this.chatService = chatService;
     }
 
-    @PostMapping
+    @PostMapping("/chat/sendMessage")
     public ResponseEntity sendMessage(@RequestBody ChatMessageRequest chatMessageRequest, HttpServletRequest req) throws UserNotFoundException, MessageMalformedException {
         try {
             ChatMessageResponse response = chatService.sendMessage(chatMessageRequest, req);

@@ -80,7 +80,7 @@ public class ChatService implements IChatService {
         String uid = message.getToUser().getUuid();
         if(uid != null && !uid.equals(""))
         messagingTemplate.convertAndSend(
-                "/socket-publisher/"+uid,
+                "/topic/greetings",
                 responseMapper.toResponse(message));
 
         return responseMapper.toResponse(message);

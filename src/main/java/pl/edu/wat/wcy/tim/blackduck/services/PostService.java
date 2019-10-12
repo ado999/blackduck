@@ -11,11 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import pl.edu.wat.wcy.tim.blackduck.models.ContentType;
-import pl.edu.wat.wcy.tim.blackduck.models.Folder;
-import pl.edu.wat.wcy.tim.blackduck.models.Post;
-import pl.edu.wat.wcy.tim.blackduck.models.User;
+import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
+import pl.edu.wat.wcy.tim.blackduck.repositories.HashtagRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.PostRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
@@ -49,6 +47,7 @@ public class PostService {
     JwtProvider jwtProvider;
     ResponseMapper responseMapper;
     RequestValidationComponent validationComponent;
+    HashtagRepository hashtagRepository;
 
     @Autowired
     public PostService(
@@ -57,7 +56,8 @@ public class PostService {
             FolderRepository folderRepository,
             JwtProvider jwtProvider,
             ResponseMapper responseMapper,
-            RequestValidationComponent validationComponent
+            RequestValidationComponent validationComponent,
+            HashtagRepository hashtagRepository
     ) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
@@ -65,6 +65,7 @@ public class PostService {
         this.jwtProvider = jwtProvider;
         this.responseMapper = responseMapper;
         this.validationComponent = validationComponent;
+        this.hashtagRepository = hashtagRepository;
     }
 
 
@@ -110,6 +111,26 @@ public class PostService {
             throw new AuthenticationException("File not recognized");
         }
         post.setContentType(contentType);
+
+        //HASHTAGS
+        List<Hashtag> hashtagList = hashtagRepository.findAll();
+        List<Hashtag> finalH = new ArrayList<>();
+        Hashtag hashtag;
+        String whole = request.getDescription();
+        String[] splited = whole.split("\\s+");
+        for (String s: splited){
+            if(s.contains("#")){
+                hashtag = hashtagRepository.findByName(s);
+                finalH.add(hashtag);
+                if(!hashtagList.contains(hashtag)){
+                    Hashtag hash = new Hashtag();
+                    hash.setName(s);
+                    hashtagRepository.save(hash);
+                    finalH.add(hash);
+                }
+            }
+        }
+        post.setHashtags(finalH);
 
         postRepository.save(post);
     }

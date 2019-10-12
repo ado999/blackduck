@@ -28,6 +28,8 @@ public class PostResponse {
 
     private String description;
 
+    private List<HashtagResponse> hastags = new ArrayList<>();
+
     private Double rate;
 
     private List<CommentResponse> comments = new ArrayList<>();

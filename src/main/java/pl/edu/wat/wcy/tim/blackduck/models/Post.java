@@ -33,6 +33,9 @@ public class Post {
 
     private String description;
 
+    @ManyToMany
+    private List<Hashtag> hashtags;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "rootPost")
     private List<Comment> comments = new ArrayList<>();
 
