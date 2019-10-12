@@ -3,9 +3,6 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.edu.wat.wcy.tim.blackduck.models.Folder;
-import pl.edu.wat.wcy.tim.blackduck.models.User;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +25,7 @@ public class PostResponse {
 
     private String description;
 
-    private List<HashtagResponse> hastags = new ArrayList<>();
+    private List<HashtagResponse> hashtags = new ArrayList<>();
 
     private Double rate;
 

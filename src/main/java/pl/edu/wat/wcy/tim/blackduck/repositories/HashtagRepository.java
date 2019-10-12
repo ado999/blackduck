@@ -6,5 +6,5 @@ import pl.edu.wat.wcy.tim.blackduck.models.Hashtag;
 
 @Repository
 public interface HashtagRepository extends JpaRepository<Hashtag, Integer> {
-    Hashtag findByName(String name);
+    Hashtag findByName (String name);
 }

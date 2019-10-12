@@ -2,7 +2,6 @@ package pl.edu.wat.wcy.tim.blackduck.util;
 
 import org.springframework.stereotype.Component;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
-import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.responses.*;
 
 import java.util.stream.Collectors;
@@ -47,12 +46,6 @@ public class ResponseMapper {
         );
     }
 
-    public HashtagResponse toResponse(Hashtag hashtag){
-        return new HashtagResponse(
-                hashtag.getName()
-        );
-    }
-
     public CommentResponse toResponse(Comment comment){
         return new CommentResponse(
                 toShortResponse(comment.getAuthor()),
@@ -65,6 +58,12 @@ public class ResponseMapper {
         return new RateResponse(
                 rate.getRate(),
                 toShortResponse(rate.getFromUser())
+        );
+    }
+
+    public HashtagResponse toResponse(Hashtag hashtag){
+        return new HashtagResponse(
+                hashtag.getName()
         );
     }
 
@@ -97,5 +96,4 @@ public class ResponseMapper {
     private ContentTypeResponse toResponse(ContentType contentType){
         return ContentTypeResponse.valueOf(contentType.name());
     }
-
 }

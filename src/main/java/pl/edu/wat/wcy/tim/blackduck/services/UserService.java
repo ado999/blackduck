@@ -80,7 +80,7 @@ public class UserService implements UserDetailsService, IUserService {
     }
 
     @Override
-    public LoginResponse login(String username, String password) {
+    public LoginResponse login(String username, String password){
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -116,6 +116,8 @@ public class UserService implements UserDetailsService, IUserService {
         // Creating user's account
         User user = objectMapper.toObject(request);
         user.setPassword(encoder.encode(request.getPassword()));
+        user.setProfilePhotoUrl("https://www.medaid.co.uk/wp-content/uploads/2019/04/default.jpg");
+        user.setProfileBacgroundUrl("http://www.allwhitebackground.com/images/2/2270.jpg");
         user.setLastActivityDate(new Date());
 
         Set<Role> roles = new HashSet();

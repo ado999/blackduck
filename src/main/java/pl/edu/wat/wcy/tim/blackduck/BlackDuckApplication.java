@@ -7,16 +7,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import pl.edu.wat.wcy.tim.blackduck.models.Role;
 import pl.edu.wat.wcy.tim.blackduck.models.RoleName;
 import pl.edu.wat.wcy.tim.blackduck.repositories.RoleRepository;
-import pl.edu.wat.wcy.tim.blackduck.services.PostService;
+import pl.edu.wat.wcy.tim.blackduck.util.Utils;
 
 import javax.annotation.Resource;
 
 
 @SpringBootApplication
 public class BlackDuckApplication implements CommandLineRunner {
-
-    @Resource
-    PostService postService;
 
     @Resource
     RoleRepository roleRepository;
@@ -27,6 +24,7 @@ public class BlackDuckApplication implements CommandLineRunner {
 
     @Override
     public void run(String... arg) {
+        Utils.createUploadDir();
         if (!roleRepository.existsByName(RoleName.USER))
             roleRepository.save(new Role(RoleName.USER));
     }

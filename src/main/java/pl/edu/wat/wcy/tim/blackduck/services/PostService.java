@@ -30,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -42,12 +41,18 @@ import java.util.stream.Collectors;
 public class PostService {
 
     UserRepository userRepository;
+
     PostRepository postRepository;
+
     FolderRepository folderRepository;
+
     JwtProvider jwtProvider;
+
     ResponseMapper responseMapper;
-    RequestValidationComponent validationComponent;
+
     HashtagRepository hashtagRepository;
+
+    RequestValidationComponent validationComponent;
 
     @Autowired
     public PostService(
@@ -56,35 +61,35 @@ public class PostService {
             FolderRepository folderRepository,
             JwtProvider jwtProvider,
             ResponseMapper responseMapper,
-            RequestValidationComponent validationComponent,
-            HashtagRepository hashtagRepository
+            HashtagRepository hashtagRepository,
+            RequestValidationComponent validationComponent
     ) {
         this.userRepository = userRepository;
         this.postRepository = postRepository;
         this.folderRepository = folderRepository;
         this.jwtProvider = jwtProvider;
         this.responseMapper = responseMapper;
+        this.hashtagRepository = hashtagRepository;
         this.validationComponent = validationComponent;
         this.hashtagRepository = hashtagRepository;
     }
 
 
     public void post(PostRequest request, HttpServletRequest req) throws AuthenticationException {
-        validationComponent.validateRequest(req);
-        Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
+        User user = validationComponent.validateRequest(req);
         Optional<Folder> folder = folderRepository.findById(request.getFolderId());
         Post post = ObjectMapper.toObject(request);
-        post.setAuthor(user.get());
+        post.setAuthor(user);
 
         //FOLDER
         if (folder.isPresent()) {
             post.setRootFolder(folder.get());
         } else {
-            Optional<Folder> defaultFolder = folderRepository.findByOwnerAndFolderName(user.get(), "default");
+            Optional<Folder> defaultFolder = folderRepository.findByOwnerAndFolderName(user, "default");
             if (defaultFolder.isPresent()) {
                 post.setRootFolder(defaultFolder.get());
             } else {
-                Folder newFolder = new Folder(user.get(), "default", "default");
+                Folder newFolder = new Folder(user, "default", "default");
                 folderRepository.save(newFolder);
                 post.setRootFolder(newFolder);
             }
@@ -94,7 +99,7 @@ public class PostService {
 
         /////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //URL
-        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(request.getFile().getOriginalFilename()).toUriString();
+        String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.getUsername()).path("/").path(request.getFile().getOriginalFilename()).toUriString();
         System.out.println(url);
         post.setContentUrl(url);
 
@@ -111,6 +116,15 @@ public class PostService {
             throw new AuthenticationException("File not recognized");
         }
         post.setContentType(contentType);
+
+        //VID URL
+        String vurl = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.getUsername()).path("/").path(request.getFile().getOriginalFilename()).toUriString();
+        System.out.println(vurl);
+        if (vurl != null && (fileType.toLowerCase().equals("png") || fileType.toLowerCase().equals("jpg"))) {
+            post.setVidPhotoUrl(vurl);
+        }else{
+            throw new AuthenticationException("File is not a type of photo");
+        }
 
         //HASHTAGS
         List<Hashtag> hashtagList = hashtagRepository.findAll();
@@ -135,7 +149,7 @@ public class PostService {
         postRepository.save(post);
     }
 
-    public PostResponse getPost(Integer id) throws IllegalArgumentException{
+    public PostResponse getPost(Integer id) throws IllegalArgumentException {
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
             //loadFile(post.get().getContentUrl());
@@ -189,20 +203,20 @@ public class PostService {
 
     }
 
-    public List<PostResponse> getPostSearch (String text){
+    public List<PostResponse> getPostSearch(String text) {
         List<Post> results = new ArrayList<>();
         List<Post> posts = postRepository.findAll();
-        for(Post post : posts){
-            if(post.getTitle().contains(text) || post.getTitle().equalsIgnoreCase(text)){
+        for (Post post : posts) {
+            if (post.getTitle().contains(text) || post.getTitle().equalsIgnoreCase(text)) {
                 results.add(post);
             }
         }
-        if(results.size()==0){
+        if (results.size() == 0) {
             throw new IllegalArgumentException("Post not found");
         }
 
         List<PostResponse> pr = new ArrayList<>();
-        for(Post post : results) {
+        for (Post post : results) {
             pr.add(responseMapper.toResponse(post));
         }
         return pr;

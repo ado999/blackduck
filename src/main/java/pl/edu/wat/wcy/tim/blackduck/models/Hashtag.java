@@ -7,12 +7,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "hashtags")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class Hashtag {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     private String name;
