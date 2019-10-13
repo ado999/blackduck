@@ -106,9 +106,15 @@ public class PostService {
         post.setContentType(contentType);
 
         //VID URL
-        String vurl = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(request.getFile().getOriginalFilename()).toUriString();
-        System.out.println(vurl);
-        if (vurl != null && (fileType.toLowerCase().equals("png") || fileType.toLowerCase().equals("jpg"))) {
+        String fileTypeVid = request.getFile().getOriginalFilename().split("\\.")[1];
+        String vurl;
+        if(contentType.equals(ContentType.VIDEO)) {
+            vurl = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(request.getVidPhoto().getOriginalFilename()).toUriString();
+        }else{
+            vurl = null;
+        }
+        System.out.println("VURL" + vurl);
+        if (fileTypeVid.toLowerCase().equals("png") || fileTypeVid.toLowerCase().equals("jpg")) {
             post.setVidPhotoUrl(vurl);
         }else{
             throw new AuthenticationException("File is not a type of photo");
