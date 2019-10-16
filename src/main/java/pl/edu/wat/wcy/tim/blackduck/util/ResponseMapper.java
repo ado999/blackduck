@@ -16,13 +16,15 @@ public class ResponseMapper {
                 user.getFullName(),
                 user.getCreationDate(),
                 user.getProfilePhotoUrl(),
-                user.getProfileBacgroundUrl(),
-                user.getDescription()
+                user.getProfileBackgroundUrl(),
+                user.getDescription(),
+                user.getEmail()
         );
     }
 
     public FolderResponse toResponse(Folder dir){
         return new FolderResponse(
+                dir.getId(),
                 toShortResponse(dir.getOwner()),
                 dir.getFolderName(),
                 dir.getDescription(),
@@ -35,6 +37,7 @@ public class ResponseMapper {
                 post.getId(),
                 post.getTitle(),
                 post.getContentUrl(),
+                post.getVidPhotoUrl(),
                 toResponse(post.getContentType()),
                 toShortResponse(post.getAuthor()),
                 post.getCreationDate(),
@@ -88,6 +91,7 @@ public class ResponseMapper {
     public UserShortResponse toShortResponse(User user){
         return new UserShortResponse(
                 user.getUsername(),
+                user.getFullName(),
                 user.getProfilePhotoUrl(),
                 user.getLastActivityDate()
         );

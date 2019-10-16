@@ -1,7 +1,5 @@
 package pl.edu.wat.wcy.tim.blackduck.repositories;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
@@ -17,7 +15,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Post findByAuthor(User user);
 
-    Page<Post> findAllByAuthorInOrderByCreationDate(Set<User> author, Pageable pageable);
+    List<Post> findAllByAuthorInOrderByCreationDateDesc(Set<User> author);
 
-    List<Post> findAllByAuthor(User user);
+    List<Post> findAllByAuthorOrderByCreationDateDesc(User user);
 }

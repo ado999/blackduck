@@ -68,6 +68,19 @@ public class ObjectMapper {
         );
     }
 
+    public static Post toObject(PostRequestPreuploaded request) {
+        return new Post(
+                request.getTitle(),
+                null,
+                null,
+                null,
+                null,
+                new Date(),
+                request.getDescription(),
+                null
+        );
+    }
+
     public static Folder toObject(FolderRequest request){
         return new Folder(
                 null,

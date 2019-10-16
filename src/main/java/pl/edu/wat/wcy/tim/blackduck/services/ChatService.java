@@ -17,10 +17,9 @@ import pl.edu.wat.wcy.tim.blackduck.repositories.ChatConversationRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.ChatMessageRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
+import pl.edu.wat.wcy.tim.blackduck.responses.FirebaseMessageResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
-import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
-import pl.edu.wat.wcy.tim.blackduck.util.RequestValidationComponent;
-import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
+import pl.edu.wat.wcy.tim.blackduck.util.*;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +39,7 @@ public class ChatService implements IChatService {
     private final RequestValidationComponent validationComponent;
     private final ResponseMapper responseMapper;
     private final ObjectMapper objectMapper;
+    private final FirebaseConnector firebaseConnector;
 
     @Autowired
     public ChatService(ChatConversationRepository conversationRepository,
@@ -49,7 +49,8 @@ public class ChatService implements IChatService {
                        SimpMessagingTemplate messagingTemplate,
                        RequestValidationComponent validationComponent,
                        ResponseMapper responseMapper,
-                       ObjectMapper objectMapper
+                       ObjectMapper objectMapper,
+                       FirebaseConnector firebaseConnector
     ){
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
@@ -59,6 +60,7 @@ public class ChatService implements IChatService {
         this.validationComponent = validationComponent;
         this.responseMapper = responseMapper;
         this.objectMapper = objectMapper;
+        this.firebaseConnector = firebaseConnector;
     }
 
     @Override
@@ -77,11 +79,21 @@ public class ChatService implements IChatService {
 
         messageRepository.save(message);
 
+        // notify user about incoming message
+        //// android compatible
+
+        FirebaseMessageResponse fmr = new FirebaseMessageResponse();
+        fmr.setTo(message.getToUser().getUuid());
+        fmr.setChatMessageResponse(responseMapper.toResponse(message));
+        firebaseConnector.sendNotification(fmr);
+
+        //// angular compatible
+
         String uid = message.getToUser().getUuid();
-        if(uid != null && !uid.equals(""))
         messagingTemplate.convertAndSend(
-                "/topic/greetings",
+                "/topic/" + uid,
                 responseMapper.toResponse(message));
+        ////
 
         return responseMapper.toResponse(message);
     }
@@ -119,10 +131,5 @@ public class ChatService implements IChatService {
                 message.getToUser()
         );
         conversationRepository.save(conversation);
-    }
-
-    public void test(LoginRequest dto) {
-        messagingTemplate.convertAndSend("/socket-publisher/"+dto.getUsername(),dto.getPassword());
-        System.out.println("test");
     }
 }

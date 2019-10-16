@@ -11,12 +11,16 @@ import pl.edu.wat.wcy.tim.blackduck.requests.FolderRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.FolderResponse;
 import pl.edu.wat.wcy.tim.blackduck.security.JwtProvider;
 import pl.edu.wat.wcy.tim.blackduck.util.ObjectMapper;
+import pl.edu.wat.wcy.tim.blackduck.util.RequestValidationComponent;
 import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FolderService {
@@ -29,28 +33,40 @@ public class FolderService {
 
     ResponseMapper responseMapper;
 
+    RequestValidationComponent validationComponent;
+
     @Autowired
-    public FolderService(UserRepository userRepository, JwtProvider jwtProvider, FolderRepository folderRepository, ResponseMapper responseMapper) {
+    public FolderService(
+            UserRepository userRepository,
+            JwtProvider jwtProvider,
+            FolderRepository folderRepository,
+            ResponseMapper responseMapper,
+            RequestValidationComponent validationComponent
+    ) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.folderRepository = folderRepository;
         this.responseMapper = responseMapper;
+        this.validationComponent = validationComponent;
     }
 
-    public void add (@Valid @RequestBody FolderRequest request, HttpServletRequest req) throws AuthenticationException {
-        Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
+    public List<FolderResponse> myFolders(HttpServletRequest req) throws AuthenticationException {
+        User user = validationComponent.validateRequest(req);
+        return user.getFolders().stream().map(folder -> responseMapper.toResponse(folder)).collect(Collectors.toList());
+    }
+
+    public int add(@Valid @RequestBody FolderRequest request, HttpServletRequest req) throws AuthenticationException {
+        User user = validationComponent.validateRequest(req);
         Folder folder1 = ObjectMapper.toObject(request);
-        if(user.isPresent()){
-            folder1.setOwner(user.get());
-        } else {
-            throw new AuthenticationException("User not found");
-        }
+        folder1.setOwner(user);
         folderRepository.save(folder1);
+        Optional<Folder> f = folderRepository.findByOwnerAndFolderName(user, request.getFolderName());
+        return f.map(Folder::getId).orElse(-1);
     }
 
-    public FolderResponse getFolder(Integer id) throws IllegalArgumentException{
+    public FolderResponse getFolder(Integer id) throws IllegalArgumentException {
         Optional<Folder> folder = folderRepository.findById(id);
-        if (folder.isPresent()){
+        if (folder.isPresent()) {
             return responseMapper.toResponse(folder.get());
         } else {
             throw new IllegalArgumentException("Folder not found");

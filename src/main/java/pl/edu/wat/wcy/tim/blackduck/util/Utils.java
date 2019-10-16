@@ -11,4 +11,22 @@ public class Utils {
         new File(path+separator+"upload-dir").mkdirs();
     }
 
+    public static String getExtension(String filename){
+
+        String fileExtension = filename.split("\\.")[1].toLowerCase();
+
+        switch (fileExtension) {
+            case "jpg":
+                return "jpg";
+            case "png":
+                return "png";
+            case "mov":
+                return "mov";
+            case "mp4":
+                return "mp4";
+            default:
+                throw new IllegalArgumentException("Media type is not supported");
+        }
+    }
+
 }

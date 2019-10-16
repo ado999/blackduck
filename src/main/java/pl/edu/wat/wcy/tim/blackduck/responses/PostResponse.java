@@ -17,6 +17,8 @@ public class PostResponse {
 
     private String contentUrl;
 
+    private String vidPhotoUrl;
+
     private ContentTypeResponse contentType; //video/photo
 
     private UserShortResponse author;

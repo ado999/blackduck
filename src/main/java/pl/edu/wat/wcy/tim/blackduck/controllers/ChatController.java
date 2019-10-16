@@ -16,6 +16,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.ChatService;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
@@ -61,10 +62,8 @@ public class ChatController {
         }
     }
 
-    @PostMapping("/chat/test")
-    public ResponseEntity test(@RequestBody LoginRequest dto){
-        chatService.test(dto);
-        return new ResponseEntity(HttpStatus.OK);
+    @GetMapping("/chat/test")
+    public ResponseEntity test(){
+        return new ResponseEntity(new SimpleDateFormat().toPattern(), HttpStatus.OK);
     }
-
 }

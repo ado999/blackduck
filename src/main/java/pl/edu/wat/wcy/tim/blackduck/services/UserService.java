@@ -21,6 +21,7 @@ import pl.edu.wat.wcy.tim.blackduck.models.User;
 import pl.edu.wat.wcy.tim.blackduck.models.UserPrinciple;
 import pl.edu.wat.wcy.tim.blackduck.repositories.RoleRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
+import pl.edu.wat.wcy.tim.blackduck.requests.EditProfileRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
 import pl.edu.wat.wcy.tim.blackduck.responses.UserResponse;
@@ -93,8 +94,11 @@ public class UserService implements UserDetailsService, IUserService {
 
         User user = userRepository.findByUsernameOrEmail(username, username).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username));
-        String uniqueId = UUID.randomUUID().toString();
-        user.setUuid(uniqueId);
+
+        if(user.getUuid().isEmpty()){
+            user.setUuid(UUID.randomUUID().toString());
+        }
+
         user.setLastActivityDate(new Date());
         userRepository.save(user);
 
@@ -116,8 +120,8 @@ public class UserService implements UserDetailsService, IUserService {
         // Creating user's account
         User user = objectMapper.toObject(request);
         user.setPassword(encoder.encode(request.getPassword()));
-        user.setProfilePhotoUrl("https://www.medaid.co.uk/wp-content/uploads/2019/04/default.jpg");
-        user.setProfileBacgroundUrl("http://www.allwhitebackground.com/images/2/2270.jpg");
+        user.setProfilePhotoUrl("default-profile.jpg");
+        user.setProfileBackgroundUrl("default-background.jpg");
         user.setLastActivityDate(new Date());
 
         Set<Role> roles = new HashSet();
@@ -174,21 +178,17 @@ public class UserService implements UserDetailsService, IUserService {
     }
 
     public void updateBackgroundPicture(MultipartFile file, HttpServletRequest req) throws AuthenticationException {
-        validationComponent.validateRequest(req);
-
-        Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
-
-        User update = user.get();
+        User user = validationComponent.validateRequest(req);
 
         String fileTypeP = file.getOriginalFilename().split("\\.")[1];
         if (fileTypeP.equals("png") || fileTypeP.equals("jpg")) {
             store(file);
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(file.getOriginalFilename()).toUriString();
-            update.setProfileBacgroundUrl(url);
+            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.getUsername()).path("/").path(file.getOriginalFilename()).toUriString();
+            user.setProfileBackgroundUrl(url);
         } else {
             throw new AuthenticationException("File not recognized");
         }
-        userRepository.save(update);
+        userRepository.save(user);
     }
 
 
@@ -204,23 +204,17 @@ public class UserService implements UserDetailsService, IUserService {
                 () -> new UsernameNotFoundException("User Not Found with -> user Id : " + userId));
     }
 
-    public List<UserResponse> getUserSearch(String text) {
-        List<User> results = new ArrayList<>();
+    public List<UserShortResponse> getUserSearch(String text) {
         List<User> users = userRepository.findAll();
-        for (User user : users) {
-            if (user.getUsername().contains(text) || user.getUsername().equalsIgnoreCase(text)) {
-                results.add(user);
-            }
-        }
-        if (results.size() == 0) {
-            throw new IllegalArgumentException("Post not found");
-        }
 
-        List<UserResponse> pr = new ArrayList<>();
-        for (User user : results) {
-            pr.add(responseMapper.toResponse((user)));
-        }
-        return pr;
+        return users.stream()
+                .filter(user -> {
+                    if(user.getUsername().toLowerCase().contains(text.toLowerCase())) return true;
+                    if(user.getFullName().toLowerCase().contains(text.toLowerCase())) return true;
+                    return false;
+                })
+                .map(user -> responseMapper.toShortResponse(user))
+                .collect(Collectors.toList());
     }
 
     public List<UserShortResponse> followers(HttpServletRequest req) throws AuthenticationException {
@@ -260,6 +254,28 @@ public class UserService implements UserDetailsService, IUserService {
         }
     }
 
+    public UserResponse editProfile(EditProfileRequest profileRequest, HttpServletRequest req) throws AuthenticationException {
+        User user = validationComponent.validateRequest(req);
+
+        if(!profileRequest.getProfilePicture().isEmpty()) {
+            user.setProfilePhotoUrl(profileRequest.getProfilePicture());
+        }
+        if(!profileRequest.getBackgroundPicture().isEmpty()){
+            user.setProfileBackgroundUrl(profileRequest.getBackgroundPicture());
+        }
+        if(!profileRequest.getFullName().isEmpty()){
+            user.setFullName(profileRequest.getFullName());
+        }
+        if(!profileRequest.getDescription().isEmpty()){
+            user.setDescription(profileRequest.getDescription());
+        }
+        if(!profileRequest.getEmail().isEmpty()){
+            user.setEmail(profileRequest.getEmail());
+        }
+
+        userRepository.save(user);
+        return responseMapper.toResponse(user);
+    }
 }
 
 

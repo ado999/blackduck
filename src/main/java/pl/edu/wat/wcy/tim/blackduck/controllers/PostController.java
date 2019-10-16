@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.edu.wat.wcy.tim.blackduck.requests.PostRequest;
+import pl.edu.wat.wcy.tim.blackduck.requests.PostRequestPreuploaded;
 import pl.edu.wat.wcy.tim.blackduck.responses.PostResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.PostService;
 
@@ -28,11 +29,11 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity getPosts(@QueryParam("page") int page, @QueryParam("size") int size, HttpServletRequest req) {
+    public ResponseEntity getPosts(HttpServletRequest req) {
         try {
-            return new ResponseEntity(postService.getPosts(PageRequest.of(page, size), req), HttpStatus.OK);
+            return new ResponseEntity<>(postService.getPosts(req), HttpStatus.OK);
         } catch (AuthenticationException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -40,34 +41,44 @@ public class PostController {
     public ResponseEntity sendPost(@Valid @ModelAttribute PostRequest request, HttpServletRequest req) {
         try {
             postService.post(request, req);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (AuthenticationException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/sendPostUF")
+    public ResponseEntity sendPostWithUploadedFiles(@RequestBody PostRequestPreuploaded post, HttpServletRequest req){
+        try {
+            postService.preuploadedPost(post, req);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
     @GetMapping(value = "/post")
-    public ResponseEntity getPost(@QueryParam("id") int id) {
+    public ResponseEntity<Object> getPost(@QueryParam("id") int id) {
         try {
             PostResponse response = postService.getPost(id);
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @GetMapping("/search/{text}")
-    public ResponseEntity getSearch(@PathVariable String text) {
+    public ResponseEntity<List<PostResponse>> getSearch(@PathVariable String text) {
         List<PostResponse> response = postService.getPostSearch(text);
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/my")
-    public ResponseEntity myPosts(HttpServletRequest req){
+    public ResponseEntity<Object> myPosts(HttpServletRequest req){
         try {
-            return new ResponseEntity(postService.myPosts(req), HttpStatus.OK);
+            return new ResponseEntity<>(postService.myPosts(req), HttpStatus.OK);
         } catch (AuthenticationException e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

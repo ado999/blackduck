@@ -1,7 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +36,6 @@ public class User {
     @Size(min = 3, max = 21)
     private String username;
 
-    @NaturalId
     @NotBlank
     @Size(max = 50)
     @Email
@@ -56,7 +54,7 @@ public class User {
 
     private String profilePhotoUrl;
 
-    private String profileBacgroundUrl;
+    private String profileBackgroundUrl;
 
     private String fullName;
 
@@ -81,7 +79,7 @@ public class User {
     private Set<User> followedUsers = new HashSet<>();
 
 
-    public User(String username, String fullName, String email, String password, String description, Date creationDate, String profilePhotoUrl, String profileBacgroundUrl) {
+    public User(String username, String fullName, String email, String password, String description, Date creationDate, String profilePhotoUrl, String profileBackgroundUrl) {
         this.username = username;
         this.fullName = fullName;
         this.email = email;
@@ -89,7 +87,7 @@ public class User {
         this.description = description;
         this.creationDate = creationDate;
         this.profilePhotoUrl = profilePhotoUrl;
-        this.profileBacgroundUrl = profileBacgroundUrl;
+        this.profileBackgroundUrl = profileBackgroundUrl;
         this.uuid=RandomString.generateUUID();
     }
 }

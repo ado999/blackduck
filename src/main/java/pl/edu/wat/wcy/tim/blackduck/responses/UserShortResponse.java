@@ -14,6 +14,8 @@ public class UserShortResponse {
 
     private String username;
 
+    private String fullName;
+
     private String profilePhotoUrl;
 
     private Date lastActivity;

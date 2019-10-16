@@ -23,8 +23,10 @@ public class UserResponse {
 
     private String profilePhotoUrl;
 
-    private String profileBacgroundUrl;
+    private String profileBackgroundUrl;
 
     private String description; // eg. "Influencer, Horse lover, \n Warsaw, PL"
+
+    private String email;
 
 }

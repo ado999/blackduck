@@ -12,6 +12,8 @@ import java.util.List;
 @NoArgsConstructor
 public class FolderResponse {
 
+    private int id;
+
     private UserShortResponse author;
 
     private String title;

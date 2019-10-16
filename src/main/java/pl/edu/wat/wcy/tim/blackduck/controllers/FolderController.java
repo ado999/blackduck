@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/folders")
 public class FolderController {
 
-    FolderService folderService;
+    private FolderService folderService;
 
     @Autowired
     public FolderController(FolderService folderService){
@@ -27,10 +27,18 @@ public class FolderController {
     @PostMapping
     public ResponseEntity addFolder (@Valid @RequestBody FolderRequest request, HttpServletRequest req){
         try {
-            folderService.add(request, req);
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity<>(folderService.add(request, req), HttpStatus.OK);
         } catch (AuthenticationException e) {
-            return new ResponseEntity(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> myFolders(HttpServletRequest req){
+        try {
+            return new ResponseEntity<>(folderService.myFolders(req), HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
