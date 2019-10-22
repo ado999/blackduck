@@ -17,6 +17,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.ws.rs.QueryParam;
 import java.util.List;
 
 @CrossOrigin
@@ -123,6 +124,17 @@ public class UserController {
     public ResponseEntity getUser(@PathVariable String username, HttpServletRequest req){
         try {
             return new ResponseEntity<>(userService.getUser(username, req), HttpStatus.OK);
+        } catch (AuthenticationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/follow")
+    public ResponseEntity setFollowingUser(@QueryParam("username") String username,
+                                           @QueryParam("follow") boolean follow,
+                                           HttpServletRequest req){
+        try {
+            return new ResponseEntity<>(userService.setFollowingUser(username, follow, req), HttpStatus.OK);
         } catch (AuthenticationException e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

@@ -4,12 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserResponse {
 
@@ -31,4 +28,27 @@ public class UserResponse {
 
     private Date lastActivity;
 
+    private boolean followed = false;
+
+    public UserResponse(
+            String uuid,
+            String displayName,
+            String fullName,
+            Date creationDate,
+            String profilePhotoUrl,
+            String profileBackgroundUrl,
+            String description,
+            String email,
+            Date lastActivity
+    ) {
+        this.uuid = uuid;
+        this.displayName = displayName;
+        this.fullName = fullName;
+        this.creationDate = creationDate;
+        this.profilePhotoUrl = profilePhotoUrl;
+        this.profileBackgroundUrl = profileBackgroundUrl;
+        this.description = description;
+        this.email = email;
+        this.lastActivity = lastActivity;
+    }
 }

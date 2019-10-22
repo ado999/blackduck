@@ -33,6 +33,7 @@ import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -194,10 +195,12 @@ public class UserService implements UserDetailsService, IUserService {
 
     @Override
     public UserResponse getUser(String username, HttpServletRequest req) throws AuthenticationException {
-        validationComponent.validateRequest(req);
+        User user = validationComponent.validateRequest(req);
         Optional<User> userOptional = userRepository.findByUsername(username);
         if(!userOptional.isPresent()) throw new AuthenticationException("User not found");
-        return responseMapper.toResponse(userOptional.get());
+        UserResponse response = responseMapper.toResponse(userOptional.get());
+        response.setFollowed(user.getFollowedUsers().contains(userOptional.get()));
+        return response;
     }
 
     @Override
@@ -277,6 +280,22 @@ public class UserService implements UserDetailsService, IUserService {
 
         userRepository.save(user);
         return responseMapper.toResponse(user);
+    }
+
+    public boolean setFollowingUser(String username, boolean follow, HttpServletRequest req) throws AuthenticationException {
+        User user = validationComponent.validateRequest(req);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if(!userOptional.isPresent()) throw new AuthenticationException("User not found");
+        Set<User> followedUsers = user.getFollowedUsers();
+        if(follow){
+            followedUsers.add(userOptional.get());
+        } else {
+            followedUsers.remove(userOptional.get());
+        }
+        user.setFollowedUsers(followedUsers);
+        userRepository.save(user);
+        System.out.println(username + follow);
+        return follow;
     }
 }
 
