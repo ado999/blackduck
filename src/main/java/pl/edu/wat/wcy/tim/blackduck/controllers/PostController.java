@@ -82,6 +82,15 @@ public class PostController {
         }
     }
 
+    @GetMapping("/user/{username}")
+    public ResponseEntity<Object> foreignPosts(@PathVariable String username, HttpServletRequest req){
+        try {
+            return new ResponseEntity<>(postService.foreignPosts(username, req), HttpStatus.OK);
+        } catch (AuthenticationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 
 //    @PostMapping("/file")
 //    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {

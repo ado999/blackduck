@@ -18,7 +18,8 @@ public class ResponseMapper {
                 user.getProfilePhotoUrl(),
                 user.getProfileBackgroundUrl(),
                 user.getDescription(),
-                user.getEmail()
+                user.getEmail(),
+                user.getLastActivityDate()
         );
     }
 

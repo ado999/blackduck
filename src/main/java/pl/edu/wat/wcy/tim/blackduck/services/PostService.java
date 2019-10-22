@@ -279,4 +279,15 @@ public class PostService {
             throw new IllegalArgumentException("File not found");
         }
     }
+
+    public List<PostResponse> foreignPosts(String username, HttpServletRequest req) throws AuthenticationException {
+        validationComponent.validateRequest(req);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if(!userOptional.isPresent()) throw new AuthenticationException("User not found");
+        return postRepository
+                .findAllByAuthorOrderByCreationDateDesc(userOptional.get())
+                .stream()
+                .map(p -> responseMapper.toResponse(p))
+                .collect(Collectors.toList());
+    }
 }
