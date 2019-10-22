@@ -1,5 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.services;
 
+import javaxt.io.Image;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wat.wcy.tim.blackduck.util.Utils;
@@ -21,7 +22,27 @@ public class FileService {
 
     public String putFile(MultipartFile file, HttpServletRequest req) {
         String fileExtension = Utils.getExtension(file.getOriginalFilename());
-        return store(file, fileExtension);
+        if(fileExtension.equals("png") || fileExtension.equals("jpg")){
+            return storeImage(file, fileExtension);
+        } else {
+            return store(file, fileExtension);
+        }
+    }
+
+    public String storeImage(MultipartFile file, String fileExtension){
+        File fileToSave = new File(rootLocation + "\\" + UUID.randomUUID().toString() + "." + fileExtension);
+        try {
+            Image image = new Image(file.getBytes());
+            if(image.getWidth() > image.getHeight()){
+                image.setWidth(1024);
+            } else {
+                image.setHeight(1024);
+            }
+            image.saveAs(fileToSave);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return fileToSave.getName();
     }
 
     public String store(MultipartFile file, String fileExtension) {

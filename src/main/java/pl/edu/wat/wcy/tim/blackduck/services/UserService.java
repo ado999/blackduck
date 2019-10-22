@@ -193,9 +193,11 @@ public class UserService implements UserDetailsService, IUserService {
 
 
     @Override
-    public User getUser(String username) {
-        return userRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("User Not Found with -> username or email : " + username));
+    public UserResponse getUser(String username, HttpServletRequest req) throws AuthenticationException {
+        validationComponent.validateRequest(req);
+        Optional<User> userOptional = userRepository.findByUsername(username);
+        if(!userOptional.isPresent()) throw new AuthenticationException("User not found");
+        return responseMapper.toResponse(userOptional.get());
     }
 
     @Override

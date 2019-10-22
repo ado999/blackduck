@@ -5,7 +5,10 @@ import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
+import pl.edu.wat.wcy.tim.blackduck.responses.UserResponse;
 
+import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
 
 @Service
@@ -13,7 +16,7 @@ public interface IUserService {
     LoginResponse login(String username, String password);
     boolean signup(SignUpRequest request);
 
-    User getUser(String username);
+    UserResponse getUser(String username, HttpServletRequest req) throws AuthenticationException;
 
     User getUser(int userId);
 }

@@ -119,4 +119,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/{username}")
+    public ResponseEntity getUser(@PathVariable String username, HttpServletRequest req){
+        try {
+            return new ResponseEntity<>(userService.getUser(username, req), HttpStatus.OK);
+        } catch (AuthenticationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

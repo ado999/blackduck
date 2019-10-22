@@ -1,5 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.util;
 
+import javaxt.io.Image;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
 import org.jcodec.common.model.Picture;
@@ -22,7 +23,9 @@ public class FrameGrabber {
             BufferedImage image = AWTUtil.toBufferedImage(picture);
             String filename = UUID.randomUUID().toString() + ".jpg";
             File savedFile = new File(loadFile.getParent() + "\\" + filename);
-            ImageIO.write(image, "jpg", savedFile);
+            Image img = new Image(image);
+            img.rotate(90);
+            img.saveAs(savedFile);
             return filename;
         } catch (IOException | JCodecException e) {
             e.printStackTrace();
