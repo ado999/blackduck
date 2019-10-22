@@ -88,6 +88,6 @@ public class User {
         this.creationDate = creationDate;
         this.profilePhotoUrl = profilePhotoUrl;
         this.profileBackgroundUrl = profileBackgroundUrl;
-        this.uuid=RandomString.generateUUID();
+        this.uuid = UUID.randomUUID().toString();
     }
 }
