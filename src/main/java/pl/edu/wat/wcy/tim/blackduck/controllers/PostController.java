@@ -83,7 +83,7 @@ public class PostController {
     }
 
     @GetMapping("/user/{username}")
-    public ResponseEntity<Object> foreignPosts(@PathVariable String username, HttpServletRequest req){
+    public ResponseEntity foreignPosts(@PathVariable String username, HttpServletRequest req){
         try {
             return new ResponseEntity<>(postService.foreignPosts(username, req), HttpStatus.OK);
         } catch (AuthenticationException e){
