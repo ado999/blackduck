@@ -14,7 +14,6 @@ public class FirebaseMessageResponse {
         this.data = m;
     }
 
-
     class Message{
         private ChatMessageResponse chatMessageResponse;
 

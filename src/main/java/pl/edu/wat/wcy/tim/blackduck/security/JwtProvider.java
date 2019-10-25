@@ -65,11 +65,6 @@ public class JwtProvider {
                 .getBody().getSubject();
     }
 
-    public String resolveUsername(String bearerToken){
-        String token = bearerToken.replace("Bearer ", "");
-        return getUserNameFromJwtToken(token);
-    }
-
     public String resolveToken(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {

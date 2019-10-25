@@ -14,9 +14,11 @@ import java.util.List;
 @Service
 public interface IChatService {
 
-    ChatMessageResponse sendMessage(ChatMessageRequest request , HttpServletRequest req) throws UserNotFoundException, AuthenticationException;
+    ChatMessageResponse sendMessage(ChatMessageRequest request , HttpServletRequest req)
+            throws UserNotFoundException, AuthenticationException;
 
-    List<ChatMessageResponse> getExistingMessages(GetMessagesRequest getMessagesRequest, HttpServletRequest req) throws UserNotFoundException, AuthenticationException;
+    List<ChatMessageResponse> getExistingMessages(GetMessagesRequest getMessagesRequest, HttpServletRequest req)
+            throws UserNotFoundException, AuthenticationException;
 
     List<ChatConversationResponse> getExistingConversations(HttpServletRequest req) throws AuthenticationException;
 }

@@ -10,15 +10,12 @@ import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.SignUpRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.LoginResponse;
 import pl.edu.wat.wcy.tim.blackduck.responses.SignupResponse;
-import pl.edu.wat.wcy.tim.blackduck.responses.UserResponse;
-import pl.edu.wat.wcy.tim.blackduck.responses.UserShortResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
-import java.util.List;
 
 @CrossOrigin
 @RestController

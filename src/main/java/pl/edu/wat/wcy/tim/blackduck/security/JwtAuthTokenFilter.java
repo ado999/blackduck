@@ -16,13 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//JwtAuthTokenFilter validates the Token using JwtProvider
-//1. get JWT token from header
-//2.validate JWT
-//3.parse username from validated JWT
-//4.load data from users table, then build an authentication object
-//5.set the authentication object to Security Context
-
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     @Autowired

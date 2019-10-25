@@ -1,7 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,16 +21,16 @@ public class Folder {
 
     @ManyToOne
     @JoinColumn(name = "users")
-    private User owner; // obvious
+    private User owner;
 
-    private String folderName; // eg. "Yummy"
+    private String folderName;
 
     @Size(max = 100)
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "rootFolder")
     @JsonManagedReference
-    private List<Post> contentList; // files inside dir
+    private List<Post> contentList;
 
     public Folder(User owner, String folderName, String description) {
         this.owner = owner;

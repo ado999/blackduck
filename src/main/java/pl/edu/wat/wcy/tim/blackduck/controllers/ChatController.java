@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
 import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.requests.ChatMessageRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.GetMessagesRequest;
@@ -28,7 +27,8 @@ public class ChatController {
     }
 
     @PostMapping("/chat/sendMessage")
-    public ResponseEntity sendMessage(@RequestBody ChatMessageRequest chatMessageRequest, HttpServletRequest req) throws UserNotFoundException, MessageMalformedException {
+    public ResponseEntity sendMessage(@RequestBody ChatMessageRequest chatMessageRequest, HttpServletRequest req)
+            throws UserNotFoundException {
         try {
             ChatMessageResponse response = chatService.sendMessage(chatMessageRequest, req);
             return new ResponseEntity<>(response, HttpStatus.OK);

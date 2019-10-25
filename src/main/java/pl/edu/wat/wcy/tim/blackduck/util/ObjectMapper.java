@@ -6,7 +6,6 @@ import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.*;
-import pl.edu.wat.wcy.tim.blackduck.responses.ChatMessageResponse;
 import pl.edu.wat.wcy.tim.blackduck.responses.UserShortResponse;
 
 import java.util.Date;
@@ -24,14 +23,6 @@ public class ObjectMapper {
         this.userRepository = userRepository;
     }
 
-    public User toObject(UserShortResponse userShortResponse) throws UserNotFoundException {
-        Optional<User> user = userRepository.findByUsername(userShortResponse.getUsername());
-        if(user.isPresent()){
-            return user.get();
-        } else {
-            throw new UserNotFoundException("Cannot find user");
-        }
-    }
 
     public ChatMessage toObject(ChatMessageRequest request) throws UserNotFoundException {
         User toUser = userRepository.findByUsername(request.getToUser()).orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -105,6 +96,4 @@ public class ObjectMapper {
                 null
         );
     }
-
-
 }

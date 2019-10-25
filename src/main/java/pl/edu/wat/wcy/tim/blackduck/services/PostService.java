@@ -1,19 +1,8 @@
 package pl.edu.wat.wcy.tim.blackduck.services;
 
-import com.google.common.io.ByteStreams;
 import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
 import pl.edu.wat.wcy.tim.blackduck.repositories.HashtagRepository;
@@ -28,36 +17,37 @@ import pl.edu.wat.wcy.tim.blackduck.util.*;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.MalformedURLException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class PostService {
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    PostRepository postRepository;
+    private PostRepository postRepository;
 
-    FolderRepository folderRepository;
+    private FolderRepository folderRepository;
 
-    JwtProvider jwtProvider;
+    private JwtProvider jwtProvider;
 
-    ResponseMapper responseMapper;
+    private ResponseMapper responseMapper;
 
-    HashtagRepository hashtagRepository;
+    private HashtagRepository hashtagRepository;
 
-    RequestValidationComponent validationComponent;
+    private RequestValidationComponent validationComponent;
 
-    FileService fileService;
+    private FileService fileService;
 
-    FrameGrabber frameGrabber;
+    private FrameGrabber frameGrabber;
 
     private final Path fileLocation = Paths.get("upload-dir");
 
@@ -216,8 +206,6 @@ public class PostService {
     public PostResponse getPost(Integer id) throws IllegalArgumentException {
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
-            //loadFile(post.get().getContentUrl());
-
             return responseMapper.toResponse(post.get());
         } else {
             throw new IllegalArgumentException("Post not found");

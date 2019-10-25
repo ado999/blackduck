@@ -25,7 +25,7 @@ public class Post {
 
     private String vidPhotoUrl;
 
-    private ContentType contentType; //video/photo
+    private ContentType contentType;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -50,7 +50,8 @@ public class Post {
 
     private double rate = 0d;
 
-    public Post(String title, String contentUrl, String vidPhotoUrl, ContentType contentType, User author, Date creationDate, String description, Folder rootFolder) {
+    public Post(String title, String contentUrl, String vidPhotoUrl, ContentType contentType, User author,
+                Date creationDate, String description, Folder rootFolder) {
         this.title = title;
         this.contentUrl = contentUrl;
         this.contentType = contentType;

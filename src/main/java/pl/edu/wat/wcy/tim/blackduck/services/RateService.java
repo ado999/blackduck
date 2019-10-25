@@ -2,7 +2,6 @@ package pl.edu.wat.wcy.tim.blackduck.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
 import pl.edu.wat.wcy.tim.blackduck.models.Rate;
@@ -25,14 +24,15 @@ import java.util.Optional;
 @Service
 public class RateService {
 
-    UserRepository userRepository;
-    JwtProvider jwtProvider;
-    RateRepository rateRepository;
-    ResponseMapper responseMapper;
-    PostRepository postRepository;
+    private UserRepository userRepository;
+    private JwtProvider jwtProvider;
+    private RateRepository rateRepository;
+    private ResponseMapper responseMapper;
+    private PostRepository postRepository;
 
     @Autowired
-    public RateService(UserRepository userRepository, JwtProvider jwtProvider, RateRepository rateRepository, ResponseMapper responseMapper, PostRepository postRepository) {
+    public RateService(UserRepository userRepository, JwtProvider jwtProvider, RateRepository rateRepository,
+                       ResponseMapper responseMapper, PostRepository postRepository) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.rateRepository = rateRepository;

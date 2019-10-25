@@ -33,7 +33,6 @@ import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,28 +46,28 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService, IUserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    RoleRepository roleRepository;
+    private RoleRepository roleRepository;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    JwtProvider jwtProvider;
+    private JwtProvider jwtProvider;
 
     @Autowired
-    PasswordEncoder encoder;
+    private PasswordEncoder encoder;
 
     @Autowired
-    ResponseMapper responseMapper;
+    private ResponseMapper responseMapper;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    RequestValidationComponent validationComponent;
+    private RequestValidationComponent validationComponent;
 
 
     @Override
@@ -170,7 +169,12 @@ public class UserService implements UserDetailsService, IUserService {
         String fileTypeP = file.getOriginalFilename().split("\\.")[1];
         if (fileTypeP.equals("png") || fileTypeP.equals("jpg")) {
             store(file);
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.get().getUsername()).path("/").path(file.getOriginalFilename()).toUriString();
+            String url = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path(user.get().getUsername())
+                    .path("/")
+                    .path(file.getOriginalFilename())
+                    .toUriString();
             update.setProfilePhotoUrl(url);
         } else {
             throw new AuthenticationException("File not recognized");
@@ -184,7 +188,12 @@ public class UserService implements UserDetailsService, IUserService {
         String fileTypeP = file.getOriginalFilename().split("\\.")[1];
         if (fileTypeP.equals("png") || fileTypeP.equals("jpg")) {
             store(file);
-            String url = ServletUriComponentsBuilder.fromCurrentContextPath().path(user.getUsername()).path("/").path(file.getOriginalFilename()).toUriString();
+            String url = ServletUriComponentsBuilder
+                    .fromCurrentContextPath()
+                    .path(user.getUsername())
+                    .path("/")
+                    .path(file.getOriginalFilename())
+                    .toUriString();
             user.setProfileBackgroundUrl(url);
         } else {
             throw new AuthenticationException("File not recognized");

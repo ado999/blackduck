@@ -1,6 +1,5 @@
 package pl.edu.wat.wcy.tim.blackduck.util;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.stereotype.Component;
 import pl.edu.wat.wcy.tim.blackduck.responses.FirebaseMessageResponse;
@@ -11,7 +10,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 
 @Component
 public class FirebaseConnector {

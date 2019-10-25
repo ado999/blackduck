@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.edu.wat.wcy.tim.blackduck.models.Comment;
 import pl.edu.wat.wcy.tim.blackduck.requests.CommentRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.CommentResponse;
 import pl.edu.wat.wcy.tim.blackduck.services.CommentService;

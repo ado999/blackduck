@@ -16,7 +16,6 @@ import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -25,15 +24,15 @@ import java.util.stream.Collectors;
 @Service
 public class FolderService {
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    JwtProvider jwtProvider;
+    private JwtProvider jwtProvider;
 
-    FolderRepository folderRepository;
+    private FolderRepository folderRepository;
 
-    ResponseMapper responseMapper;
+    private ResponseMapper responseMapper;
 
-    RequestValidationComponent validationComponent;
+    private RequestValidationComponent validationComponent;
 
     @Autowired
     public FolderService(

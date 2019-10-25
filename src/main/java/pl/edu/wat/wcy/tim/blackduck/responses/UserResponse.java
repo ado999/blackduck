@@ -1,6 +1,5 @@
 package pl.edu.wat.wcy.tim.blackduck.responses;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,19 +9,19 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserResponse {
 
-    private String uuid; //not displayed anywhere, identifies user, generated, immutable, unique
+    private String uuid;
 
-    private String displayName; // eg. "AZxBlue96",
+    private String displayName;
 
-    private String fullName; // eg. "Jan Kowalski"
+    private String fullName;
 
-    private Date creationDate; // date of creation
+    private Date creationDate;
 
     private String profilePhotoUrl;
 
     private String profileBackgroundUrl;
 
-    private String description; // eg. "Influencer, Horse lover, \n Warsaw, PL"
+    private String description;
 
     private String email;
 

@@ -64,7 +64,8 @@ public class ChatService implements IChatService {
     }
 
     @Override
-    public ChatMessageResponse sendMessage(ChatMessageRequest request , HttpServletRequest req) throws UserNotFoundException, AuthenticationException {
+    public ChatMessageResponse sendMessage(ChatMessageRequest request , HttpServletRequest req)
+            throws UserNotFoundException, AuthenticationException {
 
         User user = validationComponent.validateRequest(req);
 
@@ -93,13 +94,13 @@ public class ChatService implements IChatService {
         messagingTemplate.convertAndSend(
                 "/topic/" + uid,
                 responseMapper.toResponse(message));
-        ////
 
         return responseMapper.toResponse(message);
     }
 
     @Override
-    public List<ChatMessageResponse> getExistingMessages(GetMessagesRequest getMessagesRequest, HttpServletRequest req) throws AuthenticationException {
+    public List<ChatMessageResponse> getExistingMessages(GetMessagesRequest getMessagesRequest, HttpServletRequest req)
+            throws AuthenticationException {
         User user = validationComponent.validateRequest(req);
         Optional<User> toUserOpt = userRepository.findByUsername(getMessagesRequest.getToUserUsername());
 
@@ -125,7 +126,7 @@ public class ChatService implements IChatService {
                 .collect(Collectors.toList());
     }
 
-    private void createConversation(ChatMessage message) throws UserNotFoundException {
+    private void createConversation(ChatMessage message) {
         ChatConversation conversation = new ChatConversation(
                 message.getFromUser(),
                 message.getToUser()

@@ -80,7 +80,8 @@ public class User {
     private Set<User> followedUsers = new HashSet<>();
 
 
-    public User(String username, String fullName, String email, String password, String description, Date creationDate, String profilePhotoUrl, String profileBackgroundUrl) {
+    public User(String username, String fullName, String email, String password, String description,
+                Date creationDate, String profilePhotoUrl, String profileBackgroundUrl) {
         this.username = username;
         this.fullName = fullName;
         this.email = email;

@@ -1,8 +1,6 @@
 package pl.edu.wat.wcy.tim.blackduck.models;
 
 import lombok.Data;
-import pl.edu.wat.wcy.tim.blackduck.models.User;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;

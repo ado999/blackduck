@@ -1,12 +1,8 @@
 package pl.edu.wat.wcy.tim.blackduck.services;
 
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import pl.edu.wat.wcy.tim.blackduck.models.Comment;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
@@ -22,25 +18,24 @@ import pl.edu.wat.wcy.tim.blackduck.util.ResponseMapper;
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CommentService {
 
-    CommentRepository commentRepository;
+    private CommentRepository commentRepository;
 
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    JwtProvider jwtProvider;
+    private JwtProvider jwtProvider;
 
-    PostRepository postRepository;
+    private PostRepository postRepository;
 
-    ResponseMapper responseMapper;
+    private ResponseMapper responseMapper;
 
     @Autowired
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, JwtProvider jwtProvider, PostRepository postRepository, ResponseMapper responseMapper) {
+    public CommentService(CommentRepository commentRepository, UserRepository userRepository, JwtProvider jwtProvider,
+                          PostRepository postRepository, ResponseMapper responseMapper) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
@@ -48,7 +43,9 @@ public class CommentService {
         this.responseMapper = responseMapper;
     }
 
-    public CommentResponse post (@Valid @RequestBody CommentRequest request, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException {
+    public CommentResponse post (@Valid @RequestBody CommentRequest request, HttpServletRequest req)
+            throws IllegalArgumentException, AuthenticationException {
+
         validateRequest(req);
         Optional<User> user = userRepository.findByUsername(jwtProvider.getUserNameFromJwtToken(jwtProvider.resolveToken(req)));
         Optional<Post> post = postRepository.findById(request.getPostId());

@@ -23,7 +23,7 @@ import pl.edu.wat.wcy.tim.blackduck.services.UserService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
     private JwtAuthEntryPoint unauthorizedHandler;
@@ -56,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().
                 authorizeRequests()
                 .antMatchers("**").permitAll();
+        //todo
 //                .anyRequest().authenticated()
 //                .and()
 //                .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
