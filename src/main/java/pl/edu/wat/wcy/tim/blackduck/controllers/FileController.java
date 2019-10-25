@@ -30,7 +30,11 @@ public class FileController {
     public void getFile(@PathVariable String text,
                         HttpServletResponse response) {
 
-        postService.getFile(text, response);
+        try {
+            postService.getFile(text, response);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+        }
 
     }
 

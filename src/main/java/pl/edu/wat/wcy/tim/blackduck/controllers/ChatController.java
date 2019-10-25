@@ -4,22 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
+import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.requests.ChatMessageRequest;
 import pl.edu.wat.wcy.tim.blackduck.requests.GetMessagesRequest;
 import pl.edu.wat.wcy.tim.blackduck.responses.ChatConversationResponse;
 import pl.edu.wat.wcy.tim.blackduck.responses.ChatMessageResponse;
-import pl.edu.wat.wcy.tim.blackduck.DTOs.UserDTO;
-import pl.edu.wat.wcy.tim.blackduck.exceptions.MessageMalformedException;
-import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
-import pl.edu.wat.wcy.tim.blackduck.requests.LoginRequest;
 import pl.edu.wat.wcy.tim.blackduck.services.ChatService;
 
 import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 public class ChatController {
 
     private ChatService chatService;
@@ -60,10 +58,5 @@ public class ChatController {
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @GetMapping("/chat/test")
-    public ResponseEntity test(){
-        return new ResponseEntity(new SimpleDateFormat().toPattern(), HttpStatus.OK);
     }
 }
