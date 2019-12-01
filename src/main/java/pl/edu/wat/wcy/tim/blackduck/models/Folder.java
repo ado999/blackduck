@@ -28,13 +28,16 @@ public class Folder {
     @Size(max = 100)
     private String description;
 
+    private boolean isPrivate;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "rootFolder")
     @JsonManagedReference
     private List<Post> contentList;
 
-    public Folder(User owner, String folderName, String description) {
+    public Folder(User owner, String folderName, String description, boolean isPrivate) {
         this.owner = owner;
         this.folderName = folderName;
         this.description=description;
+        this.isPrivate = isPrivate;
     }
 }

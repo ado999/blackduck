@@ -6,4 +6,5 @@ import lombok.Data;
 public class FolderRequest {
     private String folderName;
     private String description;
+    private boolean isPrivate;
 }

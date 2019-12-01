@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,10 +64,20 @@ public class FolderService {
         return f.map(Folder::getId).orElse(-1);
     }
 
-    public FolderResponse getFolder(Integer id) throws IllegalArgumentException {
+    public FolderResponse getFolder(Integer id, HttpServletRequest req) throws IllegalArgumentException, AuthenticationException {
         Optional<Folder> folder = folderRepository.findById(id);
         if (folder.isPresent()) {
-            return responseMapper.toResponse(folder.get());
+            if (folder.get().isPrivate()) {
+                User user = validationComponent.validateRequest(req);
+                Set<User> followed = folder.get().getOwner().getFollowedUsers();
+                if(followed.contains(user)){
+                    return responseMapper.toResponse(folder.get());
+                }else{
+                    throw new IllegalArgumentException("You are not allowed to see these nudes");
+                }
+            } else {
+                return responseMapper.toResponse(folder.get());
+            }
         } else {
             throw new IllegalArgumentException("Folder not found");
         }

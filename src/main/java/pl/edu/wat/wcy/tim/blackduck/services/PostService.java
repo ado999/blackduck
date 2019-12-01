@@ -90,7 +90,7 @@ public class PostService {
             if (defaultFolder.isPresent()) {
                 post.setRootFolder(defaultFolder.get());
             } else {
-                Folder newFolder = new Folder(user, "default", "default");
+                Folder newFolder = new Folder(user, "default", "default", false);
                 folderRepository.save(newFolder);
                 post.setRootFolder(newFolder);
             }
@@ -152,7 +152,7 @@ public class PostService {
             if (defaultFolder.isPresent()) {
                 post.setRootFolder(defaultFolder.get());
             } else {
-                Folder newFolder = new Folder(user, "default", "default");
+                Folder newFolder = new Folder(user, "default", "default", false);
                 folderRepository.save(newFolder);
                 post.setRootFolder(newFolder);
             }

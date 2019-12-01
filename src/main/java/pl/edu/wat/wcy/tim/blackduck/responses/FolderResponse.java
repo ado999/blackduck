@@ -20,6 +20,9 @@ public class FolderResponse {
 
     private String description;
 
+    private boolean isPrivate;
+
     private List<PostResponse> contentList = new ArrayList<>();
+
 
  }

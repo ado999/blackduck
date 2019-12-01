@@ -29,6 +29,7 @@ public class ResponseMapper {
                 toShortResponse(dir.getOwner()),
                 dir.getFolderName(),
                 dir.getDescription(),
+                dir.isPrivate(),
                 dir.getContentList().stream().map(this::toResponse).collect(Collectors.toList())
         );
     }

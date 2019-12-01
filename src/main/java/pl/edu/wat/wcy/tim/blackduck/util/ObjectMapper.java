@@ -76,7 +76,8 @@ public class ObjectMapper {
         return new Folder(
                 null,
                 request.getFolderName(),
-                request.getDescription()
+                request.getDescription(),
+                request.isPrivate()
         );
     }
 

@@ -43,12 +43,15 @@ public class FolderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getFolder(@PathVariable Integer id){
+    public ResponseEntity getFolder(@PathVariable Integer id, HttpServletRequest req){
         try {
-            FolderResponse response = folderService.getFolder(id);
+            FolderResponse response = folderService.getFolder(id, req);
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }catch (AuthenticationException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 }
