@@ -13,7 +13,12 @@ public class Utils {
 
     public static String getExtension(String filename){
 
-        String fileExtension = filename.split("\\.")[1].toLowerCase();
+        String fileExtension;
+        try {
+            fileExtension = filename.split("\\.")[1].toLowerCase();
+        } catch (Exception e){
+            throw new IllegalArgumentException("Couldn't recognize media type");
+        }
 
         switch (fileExtension) {
             case "jpg":
