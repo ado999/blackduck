@@ -29,8 +29,10 @@ public class FileService {
         }
     }
 
-    public String storeImage(MultipartFile file, String fileExtension){
-        File fileToSave = new File(rootLocation + "\\" + UUID.randomUUID().toString() + "." + fileExtension);
+    private String storeImage(MultipartFile file, String fileExtension){
+        String randUUID = UUID.randomUUID().toString();
+        File fileToSave = new File(rootLocation + "\\" + randUUID + "." + fileExtension);
+        File thumbToSave = new File(rootLocation + "\\" + randUUID + "_thumb" + "." + fileExtension);
         try {
             Image image = new Image(file.getBytes());
             if(image.getWidth() > image.getHeight()){
@@ -39,13 +41,15 @@ public class FileService {
                 image.setHeight(1024);
             }
             image.saveAs(fileToSave);
+            image.resize(300, 300, true);
+            image.saveAs(thumbToSave);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return fileToSave.getName();
     }
 
-    public String store(MultipartFile file, String fileExtension) {
+    String store(MultipartFile file, String fileExtension) {
         File fileToSave;
         try {
             String location = rootLocation + "\\" + UUID.randomUUID().toString() + "." + fileExtension;
@@ -60,7 +64,7 @@ public class FileService {
         return fileToSave.getName();
     }
 
-    public File loadFile(String filename){
+    File loadFile(String filename){
         return new File(rootLocation + "\\" + filename);
     }
 

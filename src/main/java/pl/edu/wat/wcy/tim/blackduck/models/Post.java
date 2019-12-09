@@ -25,6 +25,8 @@ public class Post {
 
     private String vidPhotoUrl;
 
+    private String thumbnail;
+
     private ContentType contentType;
 
     @ManyToOne

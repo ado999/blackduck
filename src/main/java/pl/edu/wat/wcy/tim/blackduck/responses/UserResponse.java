@@ -19,6 +19,8 @@ public class UserResponse {
 
     private String profilePhotoUrl;
 
+    private String profileThumbnail;
+
     private String profileBackgroundUrl;
 
     private String description;
@@ -35,6 +37,7 @@ public class UserResponse {
             String fullName,
             Date creationDate,
             String profilePhotoUrl,
+            String profileThumbnail,
             String profileBackgroundUrl,
             String description,
             String email,
@@ -45,6 +48,7 @@ public class UserResponse {
         this.fullName = fullName;
         this.creationDate = creationDate;
         this.profilePhotoUrl = profilePhotoUrl;
+        this.profileThumbnail = profileThumbnail;
         this.profileBackgroundUrl = profileBackgroundUrl;
         this.description = description;
         this.email = email;

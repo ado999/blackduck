@@ -16,6 +16,7 @@ public class ResponseMapper {
                 user.getFullName(),
                 user.getCreationDate(),
                 user.getProfilePhotoUrl(),
+                user.getProfileThumbnail(),
                 user.getProfileBackgroundUrl(),
                 user.getDescription(),
                 user.getEmail(),
@@ -40,6 +41,7 @@ public class ResponseMapper {
                 post.getTitle(),
                 post.getContentUrl(),
                 post.getVidPhotoUrl(),
+                post.getThumbnail(),
                 toResponse(post.getContentType()),
                 toShortResponse(post.getAuthor()),
                 post.getCreationDate(),
@@ -55,7 +57,8 @@ public class ResponseMapper {
         return new CommentResponse(
                 toShortResponse(comment.getAuthor()),
                 comment.getContent(),
-                comment.getCreationDate()
+                comment.getCreationDate(),
+                comment.getVideoTime()
         );
     }
 
@@ -66,7 +69,7 @@ public class ResponseMapper {
         );
     }
 
-    public HashtagResponse toResponse(Hashtag hashtag){
+    private HashtagResponse toResponse(Hashtag hashtag){
         return new HashtagResponse(
                 hashtag.getName()
         );
@@ -95,6 +98,7 @@ public class ResponseMapper {
                 user.getUsername(),
                 user.getFullName(),
                 user.getProfilePhotoUrl(),
+                user.getProfileThumbnail(),
                 user.getLastActivityDate()
         );
     }

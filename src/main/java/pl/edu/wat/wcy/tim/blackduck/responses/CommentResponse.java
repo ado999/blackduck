@@ -3,6 +3,7 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.Date;
 
 @Data
@@ -15,4 +16,6 @@ public class CommentResponse {
     private String content;
 
     private Date creationDate;
+
+    private Long videoTime;
 }

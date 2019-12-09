@@ -2,6 +2,7 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
 import java.util.Date;
 
 @Data
@@ -13,6 +14,8 @@ public class UserShortResponse {
     private String fullName;
 
     private String profilePhotoUrl;
+
+    private String profileThumbnail;
 
     private Date lastActivity;
 }

@@ -13,7 +13,6 @@ import javax.naming.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.ws.rs.QueryParam;
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -28,9 +27,9 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity getPosts(HttpServletRequest req) {
+    public ResponseEntity getPosts(HttpServletRequest req, @RequestParam(value = "page") int page) {
         try {
-            return new ResponseEntity<>(postService.getPosts(req), HttpStatus.OK);
+            return new ResponseEntity<>(postService.getPosts(req, page), HttpStatus.OK);
         } catch (AuthenticationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }
@@ -67,9 +66,13 @@ public class PostController {
     }
 
     @GetMapping("/search/{text}")
-    public ResponseEntity<List<PostResponse>> getSearch(@PathVariable String text) {
-        List<PostResponse> response = postService.getPostSearch(text);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<Object> getSearch(@PathVariable String text, HttpServletRequest req) {
+        try {
+            return new ResponseEntity<>(postService.getPostSearch(text, req), HttpStatus.OK);
+        } catch (AuthenticationException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @GetMapping("/my")

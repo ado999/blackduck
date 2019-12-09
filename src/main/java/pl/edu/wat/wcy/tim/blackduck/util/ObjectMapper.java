@@ -6,10 +6,8 @@ import pl.edu.wat.wcy.tim.blackduck.exceptions.UserNotFoundException;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.UserRepository;
 import pl.edu.wat.wcy.tim.blackduck.requests.*;
-import pl.edu.wat.wcy.tim.blackduck.responses.UserShortResponse;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Component
 public class ObjectMapper {
@@ -86,7 +84,8 @@ public class ObjectMapper {
                 null,
                 null,
                 request.getContent(),
-                new Date()
+                new Date(),
+                request.getVideoTime()
         );
     }
 

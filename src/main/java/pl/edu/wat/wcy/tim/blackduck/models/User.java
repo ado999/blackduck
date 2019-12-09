@@ -55,6 +55,8 @@ public class User {
 
     private String profilePhotoUrl;
 
+    private String profileThumbnail;
+
     private String profileBackgroundUrl;
 
     private String fullName;

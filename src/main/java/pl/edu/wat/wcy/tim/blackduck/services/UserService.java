@@ -45,29 +45,42 @@ import java.util.stream.Collectors;
 @Service
 public class UserService implements UserDetailsService, IUserService {
 
-    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
     private AuthenticationManager authenticationManager;
 
-    @Autowired
     private JwtProvider jwtProvider;
 
-    @Autowired
     private PasswordEncoder encoder;
 
-    @Autowired
     private ResponseMapper responseMapper;
 
-    @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
     private RequestValidationComponent validationComponent;
+
+    @Autowired
+    public UserService(
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            AuthenticationManager authenticationManager,
+            JwtProvider jwtProvider,
+            PasswordEncoder encoder,
+            ResponseMapper responseMapper,
+            ObjectMapper objectMapper,
+            RequestValidationComponent validationComponent
+    ){
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtProvider = jwtProvider;
+        this.encoder = encoder;
+        this.responseMapper = responseMapper;
+        this.objectMapper = objectMapper;
+        this.validationComponent = validationComponent;
+    }
 
 
     @Override
@@ -102,9 +115,7 @@ public class UserService implements UserDetailsService, IUserService {
         user.setLastActivityDate(new Date());
         userRepository.save(user);
 
-
-        LoginResponse response = new LoginResponse("Bearer " + jwt, responseMapper.toResponse(user));
-        return response;
+        return new LoginResponse("Bearer " + jwt, responseMapper.toResponse(user));
     }
 
     @Override
@@ -121,10 +132,11 @@ public class UserService implements UserDetailsService, IUserService {
         User user = objectMapper.toObject(request);
         user.setPassword(encoder.encode(request.getPassword()));
         user.setProfilePhotoUrl("default-profile.jpg");
+        user.setProfileThumbnail("default-profile.jpg");
         user.setProfileBackgroundUrl("default-background.jpg");
         user.setLastActivityDate(new Date());
 
-        Set<Role> roles = new HashSet();
+        HashSet<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName(RoleName.USER).orElseThrow(
                 () -> new RuntimeException("User Role not found.")
         ));
@@ -224,8 +236,7 @@ public class UserService implements UserDetailsService, IUserService {
         return users.stream()
                 .filter(user -> {
                     if(user.getUsername().toLowerCase().contains(text.toLowerCase())) return true;
-                    if(user.getFullName().toLowerCase().contains(text.toLowerCase())) return true;
-                    return false;
+                    return user.getFullName().toLowerCase().contains(text.toLowerCase());
                 })
                 .map(user -> responseMapper.toShortResponse(user))
                 .collect(Collectors.toList());
@@ -254,7 +265,7 @@ public class UserService implements UserDetailsService, IUserService {
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private final Path rootLocation = Paths.get("\\upload-dir");
 
-    public void store(MultipartFile file) {
+    private void store(MultipartFile file) {
         try {
             String location = System.getProperty("user.dir") + rootLocation + "\\" + file.getOriginalFilename();
             //System.out.println(location);
@@ -273,6 +284,8 @@ public class UserService implements UserDetailsService, IUserService {
 
         if(!profileRequest.getProfilePicture().isEmpty()) {
             user.setProfilePhotoUrl(profileRequest.getProfilePicture());
+            user.setProfileThumbnail(profileRequest.getProfilePicture().replaceFirst("\\.\\w\\w\\w$", "_thumb") +
+                    profileRequest.getProfilePicture().substring(profileRequest.getProfilePicture().length() - 4));
         }
         if(!profileRequest.getBackgroundPicture().isEmpty()){
             user.setProfileBackgroundUrl(profileRequest.getBackgroundPicture());

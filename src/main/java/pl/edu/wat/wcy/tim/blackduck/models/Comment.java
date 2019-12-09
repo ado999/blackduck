@@ -28,10 +28,13 @@ public class Comment {
 
     private Date creationDate;
 
-    public Comment(Post rootPost, User author, String content, Date creationDate) {
+    private Long videoTime;
+
+    public Comment(Post rootPost, User author, String content, Date creationDate, Long videoTime) {
         this.rootPost = rootPost;
         this.author = author;
         this.content = content;
         this.creationDate = creationDate;
+        this.videoTime = videoTime;
     }
 }

@@ -2,6 +2,8 @@ package pl.edu.wat.wcy.tim.blackduck.services;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.edu.wat.wcy.tim.blackduck.models.*;
 import pl.edu.wat.wcy.tim.blackduck.repositories.FolderRepository;
@@ -165,6 +167,8 @@ public class PostService {
         String fileExtension = Utils.getExtension(request.getFile());
         if(fileExtension.equals("jpg") || fileExtension.equals("png")){
             post.setContentUrl(request.getFile());
+            post.setThumbnail(request.getFile().replaceFirst("\\.\\w\\w\\w$", "_thumb") + request.getFile().substring(request.getFile().length() - 4));
+            System.out.println(post.getThumbnail());
             post.setContentType(ContentType.PHOTO);
         } else if(fileExtension.equals("mov") || fileExtension.equals("mp4")){
             post.setContentUrl(request.getFile());
@@ -177,6 +181,7 @@ public class PostService {
                 throw new IllegalArgumentException("Video thumbnail must be a photo");
             }
             post.setVidPhotoUrl(request.getVidPhoto());
+            post.setThumbnail(request.getVidPhoto());
         }
 
         //HASHTAGS
@@ -212,25 +217,38 @@ public class PostService {
         }
     }
 
-    public List<PostResponse> getPosts(HttpServletRequest req) throws AuthenticationException {
-        User user = validationComponent.validateRequest(req);
-        List<Post> posts = postRepository.findAllByAuthorInOrderByCreationDateDesc(user.getFollowedUsers());
-        List<PostResponse> response = new ArrayList<>();
-        for(Post p: posts)
-            response.add(responseMapper.toResponse(p));
-        return response;
+    public List<PostResponse> getPosts(HttpServletRequest req, int page) throws AuthenticationException {
+        User requestingUser = validationComponent.validateRequest(req);
+        Pageable pageRequest = PageRequest.of(page, 10);
+        List<Post> posts = postRepository.findAllByAuthorInOrderByCreationDateDesc(requestingUser.getFollowedUsers(), pageRequest);
+        return posts.stream().filter(
+                post -> {
+                    boolean isFollowing = requestingUser.getFollowedUsers().contains(post.getAuthor());
+                    boolean isFolderPrivate = post.getRootFolder().isPrivate();
+                    if(isFolderPrivate && !isFollowing) return false;
+                    return true;
+                }
+        )
+                .map(p -> responseMapper.toResponse(p))
+                .collect(Collectors.toList());
 
     }
 
-    public List<PostResponse> getPostSearch(String text) {
-        List<Post> posts = postRepository.findAll();
+    public List<PostResponse> getPostSearch(String text, HttpServletRequest req) throws AuthenticationException {
+        User requestingUser = validationComponent.validateRequest(req);
+        List<Post> posts = new ArrayList<>();
+        postRepository.findAll().forEach(posts::add);
 
         return posts.stream().filter(
                 post -> {
+                    boolean isFollowing = requestingUser.getFollowedUsers().contains(post.getAuthor());
+                    boolean isFolderPrivate = post.getRootFolder().isPrivate();
+                    if(isFolderPrivate && !isFollowing) return false;
                     if(post.getTitle().toLowerCase().contains(text.toLowerCase())) return true;
                     if(post.getDescription().toLowerCase().contains(text.toLowerCase())) return true;
                     if(post.getAuthor().getUsername().toLowerCase().contains(text.toLowerCase())) return true;
                     if(post.getAuthor().getFullName().toLowerCase().contains(text.toLowerCase())) return true;
+
                     return false;
                 })
                 .map(p -> responseMapper.toResponse(p))
@@ -269,12 +287,20 @@ public class PostService {
     }
 
     public List<PostResponse> foreignPosts(String username, HttpServletRequest req) throws AuthenticationException {
-        validationComponent.validateRequest(req);
+        User requestingUser = validationComponent.validateRequest(req);
         Optional<User> userOptional = userRepository.findByUsername(username);
         if(!userOptional.isPresent()) throw new AuthenticationException("User not found");
         return postRepository
                 .findAllByAuthorOrderByCreationDateDesc(userOptional.get())
                 .stream()
+                .filter(
+                        post -> {
+                            boolean isFollowing = requestingUser.getFollowedUsers().contains(post.getAuthor());
+                            boolean isFolderPrivate = post.getRootFolder().isPrivate();
+                            if(isFolderPrivate && !isFollowing) return false;
+                            return true;
+                        }
+                )
                 .map(p -> responseMapper.toResponse(p))
                 .collect(Collectors.toList());
     }

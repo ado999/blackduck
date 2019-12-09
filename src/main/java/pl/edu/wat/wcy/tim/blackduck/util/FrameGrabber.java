@@ -24,6 +24,8 @@ public class FrameGrabber {
             File savedFile = new File(loadFile.getParent() + "\\" + filename);
             Image img = new Image(image);
             img.rotate(90);
+            img.resize(300, 300, true);
+
             img.saveAs(savedFile);
             return filename;
         } catch (IOException | JCodecException e) {

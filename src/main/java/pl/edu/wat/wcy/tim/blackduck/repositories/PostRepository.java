@@ -1,6 +1,7 @@
 package pl.edu.wat.wcy.tim.blackduck.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import pl.edu.wat.wcy.tim.blackduck.models.Post;
 import pl.edu.wat.wcy.tim.blackduck.models.User;
@@ -10,12 +11,12 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Integer> {
+public interface PostRepository extends PagingAndSortingRepository<Post, Integer> {
     Optional<Post> findById(Integer id);
 
     Post findByAuthor(User user);
 
-    List<Post> findAllByAuthorInOrderByCreationDateDesc(Set<User> author);
+    List<Post> findAllByAuthorInOrderByCreationDateDesc(Set<User> author, Pageable pageRequest);
 
     List<Post> findAllByAuthorOrderByCreationDateDesc(User user);
 }

@@ -3,6 +3,7 @@ package pl.edu.wat.wcy.tim.blackduck.responses;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,6 +19,8 @@ public class PostResponse {
     private String contentUrl;
 
     private String vidPhotoUrl;
+
+    private String thumbnail;
 
     private ContentTypeResponse contentType;
 

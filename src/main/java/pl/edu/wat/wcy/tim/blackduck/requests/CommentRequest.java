@@ -6,4 +6,5 @@ import lombok.Data;
 public class CommentRequest {
     private Integer postId;
     private String content;
+    private Long videoTime;
 }
