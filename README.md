@@ -1,1 +1,1 @@
-Go away fool/ Lets burn WAT
+Lets burn WAT
